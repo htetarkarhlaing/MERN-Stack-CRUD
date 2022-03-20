@@ -1,0 +1,24 @@
+{
+  "name": "mern-stack-crud-app",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "concurrently npm:dev:*",
+    "dev:client": "cd client && npm run start",
+    "dev:server": "cd server && npm run dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/htetarkarhlaing/MERN-Stack-CRUD-.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/htetarkarhlaing/MERN-Stack-CRUD-/issues"
+  },
+  "homepage": "https://github.com/htetarkarhlaing/MERN-Stack-CRUD-#readme",
+  "devDependencies": {
+    "concurrently": "^7.0.0",
+    "nodemon": "^2.0.15"
+  }
+}
