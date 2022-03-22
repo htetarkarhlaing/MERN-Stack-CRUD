@@ -22,6 +22,10 @@ const columns = [
     selector: (row) => row.assignedTo,
   },
   {
+    name: "Remark",
+    selector: (row) => row.remark,
+  },
+  {
     name: "Status",
     selector: (row) => row.status,
   },
@@ -127,6 +131,7 @@ const Task = () => {
 
   useEffect(() => {
     if (taskList.length > 0) {
+      console.log(taskList);
       setData([]);
       taskList.map((item) => {
         setData([
@@ -137,6 +142,7 @@ const Task = () => {
             description: item.description,
             assignedTo: item.assignedTo.fullname,
             assignedBy: item.assignedBy.fullname,
+            remark: item.remark,
             status: item.status,
           },
         ]);

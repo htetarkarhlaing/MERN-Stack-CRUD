@@ -6,7 +6,7 @@ const Device = () => {
   const URL = process.env.REACT_APP_URL;
 
   //states
-  const [type, setType] = useState("checkin");
+  const [type, setType] = useState("");
   const [openModel, setOpenModel] = useState(false);
   const [form, setFrom] = useState({
     email: "",
@@ -16,32 +16,17 @@ const Device = () => {
   //handlers
   const loginHandler = async () => {
     await axios
-      .post(`${URL}/api/accounts/login`, {
+      .post(`${URL}/api/devices/check-status`, {
         email: form.email,
         password: form.password,
+        deviceId: localStorage.getItem("deviceId"),
       })
       .then((resJson) => {
         if (resJson.data.meta.success) {
-          axios
-            .post(`${URL}/api/devices/checkin`, {
-              deviceId: localStorage.getItem("deviceId"),
-              accountId: resJson.data.data.account._id,
-              checkInTime: new Date(),
-            })
-            .then((res) => {
-              if (res.data.meta.success) {
-                window.alert("Checkin success");
-                setOpenModel(false);
-              } else {
-                window.alert(res.data.meta.message);
-                setOpenModel(false);
-              }
-            })
-            .catch((err) => {
-              setOpenModel(false);
-              window.alert("Checkin Fail");
-              console.log(err);
-            });
+          localStorage.setItem("att", resJson.data.data._id);
+          setType(resJson.data.meta.message);
+          window.alert("login success!");
+          setOpenModel(false);
         } else {
           setFrom({
             ...form,
@@ -66,8 +51,25 @@ const Device = () => {
     window.location.href = "/";
   };
 
-  const checker = (check) => {
-    setOpenModel(true);
+  const checker = async () => {
+    await axios
+      .post(`${URL}/api/devices/${type}`, {
+        checkInTime: new Date(),
+        checkOutTime: new Date(),
+        leave: true,
+      })
+      .then((resJson) => {
+        if (resJson.data.meta.success) {
+          setType(resJson.data.meta.message);
+          window.alert("Action success!");
+        } else {
+          window.alert("Action Failed!");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        window.alert("Action Failed!");
+      });
   };
 
   return (
@@ -102,8 +104,11 @@ const Device = () => {
           </svg>
         </button>
 
-        <span className="absolute left-5 top-5 flex items-center justify-center px-2 h-10 rounded-full bg-gray-200">
-          Not Logged In
+        <span
+          className="absolute left-5 top-5 flex items-center justify-center px-4 cursor-pointer h-10 rounded-full bg-gray-200"
+          onClick={() => setOpenModel(true)}
+        >
+          {type || "Please Login"}
         </span>
 
         <div className="w-full h-full flex flex-col items-center justify-center">
@@ -112,7 +117,11 @@ const Device = () => {
               className={`${
                 type === "checkin" ? "bg-blue-700 text-white " : "bg-blue-200"
               } w-full mx-1 rounded-lg`}
-              onClick={() => setType("checkin")}
+              onClick={() => {
+                if (type === "leave") {
+                  setType("checkin");
+                }
+              }}
             >
               Checkin
             </button>
@@ -122,7 +131,6 @@ const Device = () => {
                   ? "bg-green-600 text-white "
                   : "bg-green-200"
               } w-full mx-1 rounded-lg`}
-              onClick={() => setType("checkout")}
             >
               Checkout
             </button>
@@ -130,18 +138,26 @@ const Device = () => {
               className={`${
                 type === "leave" ? "bg-red-600 text-white " : "bg-red-200"
               } w-full mx-1 rounded-lg`}
-              onClick={() => setType("leave")}
+              onClick={() => {
+                if (type === "checkin") {
+                  setType("leave");
+                }
+              }}
             >
               Take Leave
             </button>
           </div>
           <div className="mb-4">
-            <span>Press the button below to continue!</span>
+            <span>Please login to continue!</span>
           </div>
           {type === "checkin" ? (
             <button
               className="border border-blue-700 text-blue-700 rounded-full hover:bg-blue-700 hover:text-white"
-              onClick={() => checker("checkin")}
+              onClick={() => {
+                if (type === "checkin") {
+                  checker();
+                }
+              }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -161,7 +177,11 @@ const Device = () => {
           ) : type === "checkout" ? (
             <button
               className="border border-green-700 text-green-700 rounded-full hover:bg-green-700 hover:text-white"
-              onClick={() => checker("checkout")}
+              onClick={() => {
+                if (type === "checkout") {
+                  checker();
+                }
+              }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -181,7 +201,11 @@ const Device = () => {
           ) : (
             <button
               className="border border-red-700 text-red-700 rounded-full hover:bg-red-700 hover:text-white"
-              onClick={() => checker("leave")}
+              onClick={() => {
+                if (type === "leave") {
+                  checker();
+                }
+              }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -224,11 +248,19 @@ const Device = () => {
             value={form.password}
             onChange={(e) => setFrom({ ...form, password: e.target.value })}
           />
+
           <button
-            className="uppercase outline-none bg-blue-700 text-white rounded-md w-64 h-10 px-2 py-1 mb-2"
+            className="block uppercase outline-none bg-blue-700 text-white rounded-md w-64 h-10 px-2 py-1 mb-2"
             onClick={loginHandler}
           >
             Continue
+          </button>
+
+          <button
+            className="block uppercase text-sm outline-none text-white rounded-md w-64 h-10 px-2 py-1 mb-2"
+            onClick={() => setOpenModel(false)}
+          >
+            Cancel
           </button>
         </div>
       </div>

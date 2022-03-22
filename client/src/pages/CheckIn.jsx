@@ -22,24 +22,125 @@ const columns = [
   },
 ];
 
-const data = [
-  {
-    id: 1,
-    device: "Device001",
-    employee: "Jack",
-    checkedInTime: moment().format("YYYY-MM-DD HH:mm:ss a"),
-    checkedOutTime: moment().format("YYYY-MM-DD HH:mm:ss a"),
-  },
-  {
-    id: 2,
-    device: "Device002",
-    employee: "Alex",
-    checkedInTime: moment().format("YYYY-MM-DD HH:mm:ss a"),
-    checkedOutTime: moment().format("YYYY-MM-DD HH:mm:ss a"),
-  },
-];
-
 const CheckIn = () => {
+  //instances
+  const URL = process.env.REACT_APP_URL;
+  const [openModel, setOpenModel] = useState(false);
+  const [empList, setEmpList] = useState();
+  const [taskList, setTaskList] = useState([]);
+  const [data, setData] = useState([]);
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    assignedTo: 0,
+  });
+
+  const taskFetcher = async () => {
+    await fetch(`${URL}/api/tasks`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => res.json())
+      .then((resJson) => {
+        if (resJson.meta.success) {
+          setTaskList(resJson.data);
+        } else {
+          setTaskList([]);
+        }
+      })
+      .catch((err) => {
+        setTaskList([]);
+      });
+  };
+
+  const empFetcher = async () => {
+    await fetch(`${URL}/api/accounts/staff`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => res.json())
+      .then((resJson) => {
+        if (resJson.meta.success) {
+          setEmpList(resJson.data);
+        } else {
+          setEmpList([]);
+        }
+      })
+      .catch((err) => {
+        setEmpList([]);
+      });
+  };
+
+  const taskCreator = async () => {
+    await fetch(`${URL}/api/tasks/create`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: form.title,
+        description: form.description,
+        assignedTo: form.assignedTo,
+        assignedBy: localStorage.getItem("uid"),
+      }),
+    })
+      .then((res) => res.json())
+      .then((resJson) => {
+        if (resJson.meta.success) {
+          setForm({
+            title: "",
+            description: "",
+            assignedTo: "",
+          });
+          setOpenModel(false);
+          window.alert("Success");
+          taskFetcher();
+        } else {
+          setForm({
+            title: "",
+            description: "",
+            assignedTo: "",
+          });
+          setOpenModel(false);
+          window.alert("Something went wrong!");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setForm({
+          title: "",
+          description: "",
+          assignedTo: "",
+        });
+        setOpenModel(false);
+        window.alert("Something went wrong!");
+      });
+  };
+
+  useEffect(() => {
+    taskFetcher();
+    empFetcher();
+  }, []);
+
+  useEffect(() => {
+    if (taskList.length > 0) {
+      console.log(taskList);
+      setData([]);
+      taskList.map((item) => {
+        setData([
+          ...data,
+          {
+            id: item._id,
+            title: item.title,
+            description: item.description,
+            assignedTo: item.assignedTo.fullname,
+            assignedBy: item.assignedBy.fullname,
+            remark: item.remark,
+            status: item.status,
+          },
+        ]);
+      });
+    }
+  }, [taskList]);
+
   return (
     <Layout>
       <div className="px-4 pt-4">

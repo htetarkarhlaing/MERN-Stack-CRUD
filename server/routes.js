@@ -7,6 +7,7 @@ routes.get("/", (req, res) => {
 
 // account
 routes.get("/api/accounts", account.accountFetcher);
+routes.get("/api/dashbaord", account.profileDataFetcher);
 routes.get("/api/accounts/staff", account.staffFetcher);
 routes.get("/api/accounts/detail/:id", account.accountDetailFetcher);
 routes.put("/api/accounts/update", account.accountUpdater);
@@ -22,6 +23,9 @@ routes.get("/api/devices", device.deviceFetcher);
 routes.post("/api/devices/create", device.deviceInserter);
 routes.post("/api/devices/login", device.deviceLogin);
 routes.post("/api/devices/checkin", device.accountCheckin);
+routes.post("/api/devices/checkout", device.accountCheckout);
+routes.post("/api/devices/leave", device.accountLeave);
+routes.post("/api/devices/check-status", device.checkInStatusChcker);
 
 //task
 routes.get("/api/tasks", task.taskListFetcher);

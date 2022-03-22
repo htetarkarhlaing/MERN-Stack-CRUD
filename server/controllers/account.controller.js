@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { Account } = require("../models");
+const { Account, Device, Task, Attendance, Role } = require("../models");
 
 const accountFetcher = async (req, res) => {
   try {
@@ -195,6 +195,43 @@ const accountLogin = (req, res) => {
     });
 };
 
+const profileDataFetcher = async (req, res) => {
+  let now = new Date();
+  let startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  try {
+    const deviceList = await Device.find();
+    const taskList = await Task.find({ createdAt: { $gte: startOfToday } });
+    const attList = await Attendance.find({
+      createdAt: { $gte: startOfToday },
+    });
+    const employeeList = await Account.find({
+      role: "623706512618ba2b199a9169",
+    });
+    return res.status(200).json({
+      meta: {
+        success: true,
+        message: "Succes fetched",
+      },
+      data: {
+        device: deviceList.length,
+        task: taskList.length,
+        att: attList.length,
+        emp: employeeList.length,
+      },
+      self: req.originalUrl,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      meta: {
+        success: false,
+        message: "Fail to fetch",
+      },
+      self: req.originalUrl,
+    });
+  }
+};
+
 module.exports = {
   accountFetcher,
   accountInserter,
@@ -202,4 +239,5 @@ module.exports = {
   accountLogin,
   accountDetailFetcher,
   accountUpdater,
+  profileDataFetcher,
 };

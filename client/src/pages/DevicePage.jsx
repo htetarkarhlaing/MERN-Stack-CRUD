@@ -8,23 +8,23 @@ const DevicePage = () => {
   //instances
   const URL = process.env.REACT_APP_URL;
   const [openModel, setOpenModel] = useState(false);
-  const [empList, setEmpList] = useState();
+  const [deviceList, setDeviceList] = useState();
 
   const deviceListFetcher = async () => {
-    await fetch(`${URL}/api/accounts/staff`, {
+    await fetch(`${URL}/api/devices`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     })
       .then((res) => res.json())
       .then((resJson) => {
         if (resJson.meta.success) {
-          setEmpList(resJson.data);
+          setDeviceList(resJson.data);
         } else {
-          setEmpList([]);
+          setDeviceList([]);
         }
       })
       .catch((err) => {
-        setEmpList([]);
+        setDeviceList([]);
       });
   };
 
@@ -47,46 +47,31 @@ const DevicePage = () => {
           className="outline-none px-4 py-2 bg-gray-200 rounded-lg"
           onClick={() => setOpenModel(true)}
         >
-          Create New Employee
+          Create New Deivice
         </button>
       </div>
       <div className="w-full pt-4 px-4 grid grid-cols-12 gap-4">
-        {empList
-          ? empList.map((i, k) => {
+        {deviceList
+          ? deviceList.map((i, k) => {
               return (
                 <div
                   key={k}
                   className="col-span-3 flex flex-col items-center bg-gray-100 rounded-lg"
                 >
                   <div className="w-full flex flex-col items-center">
-                    <img
-                      src={i.img}
-                      alt=""
-                      className="w-20 h-20 rounded-full overflow-hidden mt-4"
-                    />
-                    <span className="block text-lg">{i.fullname}</span>
-                    <span className="block text-sm text-gray-400">
-                      {i.email}
+                    <span className="block text-lg text-gray-600 mt-2">
+                      Device ID: {i.deviceId}
                     </span>
                     <span className="block text-sm text-gray-400">
-                      ${i.hourlyPaidRate} Per Hour
+                      PassCode: {i.passCode}
                     </span>
                     <span className="block text-sm text-gray-400">
                       <Moment date={i.createdAt} format="YYYY-MM-DD" />
                     </span>
                     <div className="flex w-full mb-2 mt-2">
-                      <Link
-                        to={{
-                          pathname: `/employee/detail`,
-                          state: {
-                            id: i._id,
-                            fullname: i.fullname,
-                          },
-                        }}
-                        className="w-full mx-2 bg-blue-500 text-white py-1 rounded-md px-1"
-                      >
-                        <button className="w-full">Edit</button>
-                      </Link>
+                      <button className="w-full mx-2 bg-red-500 text-white py-1 rounded-md px-1">
+                        Delete
+                      </button>
                     </div>
                   </div>
                 </div>
