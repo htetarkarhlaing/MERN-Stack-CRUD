@@ -9,6 +9,8 @@ import Task from "./pages/Task";
 import CheckIn from "./pages/CheckIn";
 import Device from "./pages/Device";
 import EmployeeDetail from "./pages/EmployeeDetail";
+import DevicePage from "./pages/DevicePage";
+import UserDashboard from "./pages/UserDashboard";
 
 const Routes = () => {
   const [mounted, setMounted] = useState(false);
@@ -62,11 +64,12 @@ const UserRoutes = () => {
           <Route path="/payroll" component={Payroll} />
           <Route path="/attendance" component={CheckIn} />
           <Route path="/task" component={Task} />
+          <Route path="/device-page" component={DevicePage} />
         </>
       ) : (
         <>
           {" "}
-          <Route exact path="/" component={Dashboard} />
+          <Route exact path="/" component={UserDashboard} />
           {/* <Route path="/employee" component={Employee} />
           <Route path="/payroll" component={Payroll} />
           <Route path="/attendance" component={CheckIn} />

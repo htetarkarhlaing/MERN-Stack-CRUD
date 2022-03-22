@@ -6,6 +6,7 @@ const links = [
   { label: "Employees", route: "/employee", icons: "" },
   { label: "Payroll", route: "/payroll", icons: "" },
   { label: "Attendance", route: "/attendance", icons: "" },
+  { label: "Device", route: "/device-page", icons: "" },
   { label: "Task", route: "/task", icons: "" },
 ];
 
