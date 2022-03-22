@@ -10,7 +10,7 @@ const attendanceSchema = new Schema(
     },
     accountId: {
       type: Schema.Types.ObjectId,
-      ref: "Device",
+      ref: "Account",
       required: true,
     },
     checkInTime: {

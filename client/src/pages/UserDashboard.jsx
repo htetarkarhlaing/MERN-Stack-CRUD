@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import UserLayout from "../Layout/User";
 
@@ -47,10 +47,33 @@ const data = [
   },
 ];
 const UserDashboard = () => {
-  const logoutHandler = () => {
-    localStorage.clear();
-    window.location.href = "/";
+  //instances
+  const URL = process.env.REACT_APP_URL;
+  const [taskList, setTaskList] = useState([]);
+
+  const taskFetcher = async () => {
+    await fetch(`${URL}/api/tasks`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => res.json())
+      .then((resJson) => {
+        if (resJson.meta.success) {
+          setTaskList(resJson.data);
+        } else {
+          setTaskList([]);
+        }
+      })
+      .catch((err) => {
+        setTaskList([]);
+      });
   };
+
+  const taskHandler = (id) => {};
+
+  useEffect(() => {
+    taskFetcher();
+  }, []);
 
   return (
     <UserLayout>
@@ -80,49 +103,44 @@ const UserDashboard = () => {
             <div className="w-full mt-12 px-4">
               <h1 className="text-lg font-bold">Tasks</h1>
               <div className="w-full mt-4 flex flex-col gap-3">
-                <div className="border border-gray-200 p-2 rounded-lg">
-                  <div className="flex items-center justify-between">
-                    <p className="text-base font-semibold">To Code</p>
-                    <div className="bg-warning px-2 py-1 rounded-md">
-                      <p className="text-xs font-semibold">Pending</p>
-                    </div>
-                  </div>
-                  <p className="mt-1 text-sm font-semibold text-gray-400">
-                    Clone the Youtube
-                  </p>
-                  <div className="mt-6 flex justify-between">
-                    <p className="text-sm text-gray-400 font-semibold">
-                      Assigned by{" "}
-                      <span className="text-primary">Aung Htet</span>
-                    </p>
-                    <p className="text-sm text-gray-400 font-semibold">
-                      Assigned to{" "}
-                      <span className="text-primary">Maung Maung</span>
-                    </p>
-                  </div>
-                </div>
-
-                <div className="border border-gray-200 p-2 rounded-lg">
-                  <div className="flex items-center justify-between">
-                    <p className="text-base font-semibold">To Eat</p>
-                    <div className="bg-success px-2 py-1 rounded-md">
-                      <p className="text-xs font-semibold text-white">
-                        Complete
-                      </p>
-                    </div>
-                  </div>
-                  <p className="mt-1 text-sm font-semibold text-gray-400">
-                    Eat nutrients properly
-                  </p>
-                  <div className="mt-6 flex justify-between">
-                    <p className="text-sm text-gray-400 font-semibold">
-                      Assigned by <span className="text-primary">Su Su</span>
-                    </p>
-                    <p className="text-sm text-gray-400 font-semibold">
-                      Assigned to <span className="text-primary">Ko Ko</span>
-                    </p>
-                  </div>
-                </div>
+                {taskList &&
+                  taskList.map((item, key) => {
+                    return (
+                      <div className="border border-gray-200 p-2 rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <p className="text-base font-semibold">
+                            {item.title}
+                          </p>
+                          <div className="bg-warning px-2 py-1 rounded-md">
+                            <p className="text-xs font-semibold">
+                              {item.status}
+                            </p>
+                          </div>
+                        </div>
+                        <p className="mt-1 text-sm font-semibold text-gray-400">
+                          {item.description}
+                        </p>
+                        <div className="mt-6 flex justify-between">
+                          <p className="text-sm text-gray-400 font-semibold">
+                            Assigned by{" "}
+                            <span className="text-primary">
+                              {item.assignedBy.fullname}
+                            </span>
+                          </p>
+                          <p className="text-sm text-gray-400 font-semibold">
+                            <span
+                              className="text-primary cursor-pointer"
+                              onClick={() => {
+                                taskHandler(item._id);
+                              }}
+                            >
+                              Make As Done
+                            </span>
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
               </div>
             </div>
           </div>

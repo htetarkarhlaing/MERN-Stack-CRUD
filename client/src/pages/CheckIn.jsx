@@ -20,28 +20,26 @@ const columns = [
     name: "Checked Out Time",
     selector: (row) => row.checkedOutTime,
   },
+  {
+    name: "Leave",
+    selector: (row) => row.leave,
+  },
 ];
 
 const CheckIn = () => {
   //instances
   const URL = process.env.REACT_APP_URL;
-  const [openModel, setOpenModel] = useState(false);
-  const [empList, setEmpList] = useState();
   const [taskList, setTaskList] = useState([]);
   const [data, setData] = useState([]);
-  const [form, setForm] = useState({
-    title: "",
-    description: "",
-    assignedTo: 0,
-  });
 
   const taskFetcher = async () => {
-    await fetch(`${URL}/api/tasks`, {
+    await fetch(`${URL}/api/attendence`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     })
       .then((res) => res.json())
       .then((resJson) => {
+        console.log(resJson);
         if (resJson.meta.success) {
           setTaskList(resJson.data);
         } else {
@@ -53,71 +51,8 @@ const CheckIn = () => {
       });
   };
 
-  const empFetcher = async () => {
-    await fetch(`${URL}/api/accounts/staff`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    })
-      .then((res) => res.json())
-      .then((resJson) => {
-        if (resJson.meta.success) {
-          setEmpList(resJson.data);
-        } else {
-          setEmpList([]);
-        }
-      })
-      .catch((err) => {
-        setEmpList([]);
-      });
-  };
-
-  const taskCreator = async () => {
-    await fetch(`${URL}/api/tasks/create`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title: form.title,
-        description: form.description,
-        assignedTo: form.assignedTo,
-        assignedBy: localStorage.getItem("uid"),
-      }),
-    })
-      .then((res) => res.json())
-      .then((resJson) => {
-        if (resJson.meta.success) {
-          setForm({
-            title: "",
-            description: "",
-            assignedTo: "",
-          });
-          setOpenModel(false);
-          window.alert("Success");
-          taskFetcher();
-        } else {
-          setForm({
-            title: "",
-            description: "",
-            assignedTo: "",
-          });
-          setOpenModel(false);
-          window.alert("Something went wrong!");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        setForm({
-          title: "",
-          description: "",
-          assignedTo: "",
-        });
-        setOpenModel(false);
-        window.alert("Something went wrong!");
-      });
-  };
-
   useEffect(() => {
     taskFetcher();
-    empFetcher();
   }, []);
 
   useEffect(() => {
@@ -129,12 +64,11 @@ const CheckIn = () => {
           ...data,
           {
             id: item._id,
-            title: item.title,
-            description: item.description,
-            assignedTo: item.assignedTo.fullname,
-            assignedBy: item.assignedBy.fullname,
-            remark: item.remark,
-            status: item.status,
+            device: item.deviceId.deviceId,
+            employee: item.accountId.fullname,
+            checkedInTime: item.createdAt,
+            checkedOutTime: item.createdAt,
+            leave: item.leave ? "Leave" : "Not Leave",
           },
         ]);
       });

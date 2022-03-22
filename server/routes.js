@@ -1,5 +1,5 @@
 const routes = require("express").Router();
-const { account, role, device, task } = require("./controllers");
+const { account, role, device, task, payroll } = require("./controllers");
 
 routes.get("/", (req, res) => {
   res.send("Hello World");
@@ -20,6 +20,7 @@ routes.post("/api/roles/create", role.roleInserter);
 
 //devices
 routes.get("/api/devices", device.deviceFetcher);
+routes.get("/api/attendence", device.attendanceFetcher);
 routes.post("/api/devices/create", device.deviceInserter);
 routes.post("/api/devices/login", device.deviceLogin);
 routes.post("/api/devices/checkin", device.accountCheckin);
@@ -29,7 +30,12 @@ routes.post("/api/devices/check-status", device.checkInStatusChcker);
 
 //task
 routes.get("/api/tasks", task.taskListFetcher);
+routes.get("/api/tasks/:id", task.taskListFetchByUserId);
 routes.post("/api/tasks/create", task.taskInserter);
 routes.put("/api/tasks/update", task.taskUpdater);
+
+//payroll
+routes.get("/api/payroll/", payroll.payrollListFetcher);
+routes.post("/api/payroll/caculate", payroll.payrollCreator);
 
 module.exports = routes;

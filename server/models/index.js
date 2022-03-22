@@ -4,4 +4,5 @@ module.exports = {
   Device: require("./Device.model"),
   Attendance: require("./Attendance.model"),
   Task: require("./Task.model"),
+  Payroll: require("./Payroll.model"),
 };

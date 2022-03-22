@@ -149,6 +149,7 @@ const Task = () => {
       });
     }
   }, [taskList]);
+
   return (
     <Layout>
       <div className="w-full h-10 mt-2 px-4 flex justify-between items-center">

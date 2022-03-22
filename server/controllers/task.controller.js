@@ -25,6 +25,31 @@ const taskListFetcher = async (req, res) => {
   }
 };
 
+const taskListFetchByUserId = async (req, res) => {
+  try {
+    const taskList = await Task.find({ assignedTo: req.params.id })
+      .populate("assignedTo", "-__v")
+      .populate("assignedBy");
+    return res.status(200).json({
+      meta: {
+        success: true,
+        length: taskList.length,
+      },
+      data: taskList,
+      self: req.originalUrl,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      meta: {
+        success: false,
+        message: err,
+      },
+      self: req.originalUrl,
+    });
+  }
+};
+
 const taskListDetailFetcher = async (req, res) => {
   try {
     const taskList = await Task.findById(req.body.taskId);
@@ -103,4 +128,5 @@ module.exports = {
   taskListDetailFetcher,
   taskInserter,
   taskUpdater,
+  taskListFetchByUserId,
 };

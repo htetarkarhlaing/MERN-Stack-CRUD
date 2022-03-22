@@ -35,13 +35,12 @@ const Payroll = () => {
   const [payrollList, setPayrollList] = useState([]);
   const [data, setData] = useState([]);
   const [form, setForm] = useState({
-    title: "",
-    description: "",
-    assignedTo: 0,
+    emp: 0,
+    bonus: 0,
   });
 
   const taskFetcher = async () => {
-    await fetch(`${URL}/api/tasks`, {
+    await fetch(`${URL}/api/payroll`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     })
@@ -57,6 +56,8 @@ const Payroll = () => {
         setPayrollList([]);
       });
   };
+
+  console.log(payrollList);
 
   const empFetcher = async () => {
     await fetch(`${URL}/api/accounts/staff`, {
@@ -76,33 +77,29 @@ const Payroll = () => {
       });
   };
 
-  const taskCreator = async () => {
-    await fetch(`${URL}/api/tasks/create`, {
+  const payrollCreator = async () => {
+    await fetch(`${URL}/api/payroll/caculate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        title: form.title,
-        description: form.description,
-        assignedTo: form.assignedTo,
-        assignedBy: localStorage.getItem("uid"),
+        empId: form.emp,
+        bonus: form.bonus,
       }),
     })
       .then((res) => res.json())
       .then((resJson) => {
         if (resJson.meta.success) {
           setForm({
-            title: "",
-            description: "",
-            assignedTo: "",
+            emp: 0,
+            bonus: 0,
           });
           setOpenModel(false);
           window.alert("Success");
           taskFetcher();
         } else {
           setForm({
-            title: "",
-            description: "",
-            assignedTo: "",
+            emp: 0,
+            bonus: 0,
           });
           setOpenModel(false);
           window.alert("Something went wrong!");
@@ -111,9 +108,8 @@ const Payroll = () => {
       .catch((err) => {
         console.log(err);
         setForm({
-          title: "",
-          description: "",
-          assignedTo: "",
+          emp: 0,
+          bonus: 0,
         });
         setOpenModel(false);
         window.alert("Something went wrong!");
@@ -133,17 +129,17 @@ const Payroll = () => {
           ...data,
           {
             id: item._id,
-            title: item.title,
-            description: item.description,
-            assignedTo: item.assignedTo.fullname,
-            assignedBy: item.assignedBy.fullname,
-            remark: item.remark,
+            emp: item.empId.fullname,
+            wokinghour: item.totalWorkingHour,
+            bonus: item.bonus,
+            totalAmount: item.totalWorkingHour + item.bonus,
             status: item.status,
           },
         ]);
       });
     }
   }, [payrollList]);
+
   return (
     <Layout>
       <div className="w-full h-10 mt-2 px-4 flex justify-between items-center">
@@ -157,7 +153,7 @@ const Payroll = () => {
 
         <button
           className="outline-none px-4 py-2 rounded-lg bg-primary"
-          // onClick={() => setOpenModel(true)}
+          onClick={() => setOpenModel(true)}
         >
           <p className="font-semibold text-white text-sm">Caculate Payroll</p>
         </button>
@@ -169,6 +165,66 @@ const Payroll = () => {
           data={data}
           pagination
         />
+      </div>
+
+      <div
+        className={`${
+          openModel ? "block" : "hidden"
+        } absolute top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-25 backdrop-blur-sm`}
+      >
+        <div className="border px-4 py-4 rounded-md bg-white drop-shadow-lg">
+          <h1 className="text-black text-xl mb-4 text-center">
+            Caculate Payroll
+          </h1>
+
+          <select
+            className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
+            value={form.assignedTo}
+            onChange={(e) => setForm({ ...form, emp: e.target.value })}
+          >
+            <option value={0}>-- select --</option>;
+            {empList ? (
+              empList.map((item, key) => {
+                return (
+                  <option key={key} value={item._id}>
+                    {item.fullname}
+                  </option>
+                );
+              })
+            ) : (
+              <option value="">Loading...</option>
+            )}
+          </select>
+          <input
+            type="number"
+            placeholder="Bonus"
+            className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
+            value={form.bonus}
+            onChange={(e) => setForm({ ...form, bonus: e.target.value })}
+          />
+
+          <div className="flex justify-end items-center mt-6 mb-2">
+            <button
+              className="outline-none text-sm text-red-700 rounded-md w-32 px-4 py-2"
+              onClick={() => {
+                setForm({
+                  title: "",
+                  description: "",
+                  assignedTo: "",
+                });
+                setOpenModel(false);
+              }}
+            >
+              <p className="text-sm font-semibold">Cancel</p>
+            </button>
+            <button
+              className="outline-none text-sm bg-primary text-white rounded-md w-32 px-4 py-2"
+              onClick={payrollCreator}
+            >
+              <p className="text-sm font-semibold">Save</p>
+            </button>
+          </div>
+        </div>
       </div>
     </Layout>
   );

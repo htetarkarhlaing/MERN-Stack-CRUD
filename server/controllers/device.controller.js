@@ -273,6 +273,35 @@ const checkInStatusChcker = async (req, res) => {
   }
 };
 
+const attendanceFetcher = async (req, res) => {
+  let now = new Date();
+  let startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  try {
+    const payrollData = await Attendance.find({
+      createdAt: { $gte: startOfToday },
+    })
+      .populate("accountId", "-__v")
+      .populate("deviceId");
+    return res.status(200).json({
+      meta: {
+        success: true,
+        length: payrollData.length,
+      },
+      data: payrollData,
+      self: req.originalUrl,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      meta: {
+        success: false,
+        message: err,
+      },
+      self: req.originalUrl,
+    });
+  }
+};
+
 module.exports = {
   deviceFetcher,
   deviceInserter,
@@ -282,4 +311,5 @@ module.exports = {
   accountLeave,
   checkInStatusChcker,
   deviceDeletor,
+  attendanceFetcher,
 };
