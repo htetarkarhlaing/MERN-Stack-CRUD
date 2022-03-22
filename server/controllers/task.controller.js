@@ -46,7 +46,6 @@ const taskListDetailFetcher = async (req, res) => {
 };
 
 const taskInserter = async (req, res) => {
-  console.log(req.body);
   const taskAdder = new Task({
     assignedTo: req.body.assignedTo,
     assignedBy: req.body.assignedBy,
@@ -74,4 +73,34 @@ const taskInserter = async (req, res) => {
   }
 };
 
-module.exports = { taskListFetcher, taskListDetailFetcher, taskInserter };
+const taskUpdater = async (req, res) => {
+  try {
+    const updatedTask = await Task.findByIdAndUpdate(req.body.id, {
+      status: req.body.status,
+      remark: req.body.remark,
+    });
+    return res.status(200).json({
+      meta: {
+        success: true,
+      },
+      data: updatedTask,
+      self: req.originalUrl,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      meta: {
+        success: false,
+        message: err,
+      },
+      self: req.originalUrl,
+    });
+  }
+};
+
+module.exports = {
+  taskListFetcher,
+  taskListDetailFetcher,
+  taskInserter,
+  taskUpdater,
+};
