@@ -156,4 +156,94 @@ const accountCheckin = async (req, res) => {
   }
 };
 
-module.exports = { deviceFetcher, deviceInserter, deviceLogin, accountCheckin };
+const accountCheckout = async (req, res) => {
+  const checkin = new Attendance({
+    deviceId: req.body.deviceId,
+    accountId: req.body.accountId,
+    checkInTime: req.body.checkInTime,
+    isLeave: false,
+  });
+
+  let now = new Date();
+  let startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  try {
+    Attendance.find({
+      accountId: req.body.accountId,
+      checkInTime: { $gte: startOfToday },
+    }).exec((err, att) => {
+      console.log(att);
+      if (err) {
+        console.log(err);
+        return res.status(500).json({
+          meta: {
+            success: false,
+          },
+          self: req.originalUrl,
+        });
+      }
+      if (att.length > 0) {
+        return res.status(400).json({
+          meta: {
+            success: false,
+            message: "Already checked in.",
+          },
+          self: req.originalUrl,
+        });
+      } else {
+        const checked = checkin.save();
+        return res.status(201).json({
+          meta: {
+            success: true,
+          },
+          data: checked,
+          self: req.originalUrl,
+        });
+      }
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      meta: {
+        success: false,
+      },
+      self: req.originalUrl,
+    });
+  }
+};
+
+const checkInStatusChcker = async () => {
+  let now = new Date();
+  let startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  try {
+    const attendanceDetail = await Attendance.find({
+      accountId: req.body.accountId,
+      checkInTime: { $gte: startOfToday },
+    });
+    return res.status(200).json({
+      meta: {
+        success: true,
+        message: attendanceDetail,
+      },
+      self: req.originalUrl,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      meta: {
+        success: false,
+      },
+      self: req.originalUrl,
+    });
+  }
+};
+
+module.exports = {
+  deviceFetcher,
+  deviceInserter,
+  deviceLogin,
+  accountCheckin,
+  accountCheckout,
+  checkInStatusChcker,
+};

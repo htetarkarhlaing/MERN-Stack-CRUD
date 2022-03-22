@@ -102,6 +102,37 @@ const accountInserter = async (req, res) => {
   }
 };
 
+const accountUpdater = async (req, res) => {
+  try {
+    const accountUpdater = await Account.findByIdAndUpdate(req.body.id, {
+      email: req.body.email,
+      password: req.body.password,
+      fullname: req.body.fullname,
+      hourlyPaidRate: req.body.hourlyPaidRate,
+      img: req.body.img,
+      nrc: req.body.nrc,
+      department: req.body.department,
+      dateOfBirth: req.body.dateOfBirth,
+      education: req.body.education,
+    });
+
+    return res.status(201).json({
+      meta: {
+        success: true,
+      },
+      data: accountUpdater,
+      self: req.originalUrl,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      meta: {
+        success: false,
+      },
+      self: req.originalUrl,
+    });
+  }
+};
+
 const accountLogin = (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -170,4 +201,5 @@ module.exports = {
   staffFetcher,
   accountLogin,
   accountDetailFetcher,
+  accountUpdater,
 };
