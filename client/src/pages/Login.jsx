@@ -74,7 +74,7 @@ export default function Login() {
         }}
       ></div>
       <div className="w-1/4 flex items-center justify-center flex-col">
-        <h1 className="text-2xl uppercase my-3">
+        <h1 className="text-xl font-bold uppercase my-3">
           {isDevice ? "Device Login" : "Account Login"}
         </h1>
         {isDevice ? (
@@ -118,7 +118,7 @@ export default function Login() {
               onChange={(e) => setFrom({ ...form, password: e.target.value })}
             />
             <button
-              className="uppercase outline-none bg-blue-700 text-white rounded-md w-64 h-10 px-2 py-1 mb-2"
+              className="outline-none bg-primary text-sm font-semibold text-white rounded-md w-64 h-10 px-2 py-1 mb-2"
               onClick={loginHandler}
             >
               Login

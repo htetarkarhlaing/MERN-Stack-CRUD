@@ -35,9 +35,9 @@ const DevicePage = () => {
   return (
     <Layout>
       <div className="w-full h-10 mt-2 px-4 flex justify-between items-center">
-        <Link to="/employee">
-          <div className="font-bold text-sm text-gray-400 uppercase">
-            <span>Employees</span>
+        <Link to="/device-page">
+          <div className="pt-4 mb-6 font-semibold text-xs text-gray-400 uppercase">
+            <span>Devices</span>
             <span className="px-1">/</span>
             <span className="text-gray-500">List</span>
           </div>

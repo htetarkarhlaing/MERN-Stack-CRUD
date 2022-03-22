@@ -146,8 +146,8 @@ const Task = () => {
   return (
     <Layout>
       <div className="w-full h-10 mt-2 px-4 flex justify-between items-center">
-        <Link to="/employee">
-          <div className="font-bold text-sm text-gray-400 uppercase">
+        <Link to="/task">
+          <div className="pt-4 mb-6 font-semibold text-xs text-gray-400 uppercase">
             <span>Task</span>
             <span className="px-1">/</span>
             <span className="text-gray-500">List</span>
@@ -155,10 +155,10 @@ const Task = () => {
         </Link>
 
         <button
-          className="outline-none px-4 py-2 bg-gray-200 rounded-lg"
+          className="outline-none px-4 py-2 rounded-lg bg-primary"
           onClick={() => setOpenModel(true)}
         >
-          Create New Task
+          <p className="font-semibold text-white text-sm">Create New Task</p>
         </button>
       </div>
       <div className="px-4 pt-4">
@@ -167,9 +167,9 @@ const Task = () => {
       <div
         className={`${
           openModel ? "block" : "hidden"
-        } absolute top-0 left-0 w-screen h-screen flex items-center justify-center`}
+        } absolute top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-25 backdrop-blur-sm`}
       >
-        <div className="border px-4 py-4 rounded-md bg-gray-200 drop-shadow-lg">
+        <div className="border px-4 py-4 rounded-md bg-white drop-shadow-lg">
           <h1 className="text-black text-xl mb-4 text-center">
             Create New Task
           </h1>
@@ -207,9 +207,9 @@ const Task = () => {
             )}
           </select>
 
-          <div className="flex">
+          <div className="flex justify-end items-center mt-6 mb-2">
             <button
-              className="uppercase outline-none text-sm text-red-700 rounded-md w-32 px-2 py-1 mb-2"
+              className="outline-none text-sm text-red-700 rounded-md w-32 px-4 py-2"
               onClick={() => {
                 setForm({
                   title: "",
@@ -219,13 +219,13 @@ const Task = () => {
                 setOpenModel(false);
               }}
             >
-              Cancel
+              <p className="text-sm font-semibold">Cancel</p>
             </button>
             <button
-              className="uppercase outline-none text-sm bg-green-700 text-white rounded-md w-32 px-2 py-1 mb-2"
+              className="outline-none text-sm bg-primary text-white rounded-md w-32 px-4 py-2"
               onClick={taskCreator}
             >
-              Save
+              <p className="text-sm font-semibold">Save</p>
             </button>
           </div>
         </div>

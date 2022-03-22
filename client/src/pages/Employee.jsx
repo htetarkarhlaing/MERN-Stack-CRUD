@@ -139,7 +139,7 @@ const Employee = () => {
     <Layout>
       <div className="w-full h-10 mt-2 px-4 flex justify-between items-center">
         <Link to="/employee">
-          <div className="font-bold text-sm text-gray-400 uppercase">
+          <div className="font-semibold text-xs text-gray-400 uppercase">
             <span>Employees</span>
             <span className="px-1">/</span>
             <span className="text-gray-500">List</span>
@@ -147,10 +147,12 @@ const Employee = () => {
         </Link>
 
         <button
-          className="outline-none px-4 py-2 bg-gray-200 rounded-lg"
+          className="outline-none px-4 py-2 rounded-lg bg-primary"
           onClick={() => setOpenModel(true)}
         >
-          Create New Employee
+          <p className="font-semibold text-white text-sm">
+            Create New Employee
+          </p>
         </button>
       </div>
       <div className="w-full pt-4 px-4 grid grid-cols-12 gap-4">
@@ -159,7 +161,7 @@ const Employee = () => {
               return (
                 <div
                   key={k}
-                  className="col-span-3 flex flex-col items-center bg-gray-100 rounded-lg"
+                  className="col-span-3 flex flex-col items-center border border-gray-200 rounded-lg"
                 >
                   <div className="w-full flex flex-col items-center">
                     <img
@@ -167,16 +169,18 @@ const Employee = () => {
                       alt=""
                       className="w-20 h-20 rounded-full overflow-hidden mt-4"
                     />
-                    <span className="block text-lg">{i.fullname}</span>
-                    <span className="block text-sm text-gray-400">
-                      {i.email}
-                    </span>
-                    <span className="block text-sm text-gray-400">
-                      ${i.hourlyPaidRate} Per Hour
-                    </span>
-                    <span className="block text-sm text-gray-400">
-                      <Moment date={i.createdAt} format="YYYY-MM-DD" />
-                    </span>
+                    <div className="my-4 flex flex-col items-center">
+                      <p className="text-md font-semibold">{i.fullname}</p>
+                      <p className="text-sm font-semibold text-gray-400">
+                        {i.email}
+                      </p>
+                      <p className="text-sm font-semibold text-gray-400">
+                        ${i.hourlyPaidRate} Per Hour
+                      </p>
+                      <p className="text-sm font-semibold text-gray-400">
+                        <Moment date={i.createdAt} format="YYYY-MM-DD" />
+                      </p>
+                    </div>
                     <div className="flex w-full mb-2 mt-2">
                       <Link
                         to={{
@@ -186,9 +190,11 @@ const Employee = () => {
                             fullname: i.fullname,
                           },
                         }}
-                        className="w-full mx-2 bg-blue-500 text-white py-1 rounded-md px-1"
+                        className="w-full mx-2 bg-primary text-white py-2 rounded-lg text-center"
                       >
-                        <button className="w-full">Edit</button>
+                        <p className="font-semibold text-white text-sm">
+                          Detail
+                        </p>
                       </Link>
                     </div>
                   </div>
@@ -200,94 +206,107 @@ const Employee = () => {
       <div
         className={`${
           openModel ? "block" : "hidden"
-        } absolute top-0 left-0 w-screen h-screen flex items-center justify-center backdrop-blur-sm`}
+        } absolute top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-25 backdrop-blur-sm`}
       >
-        <div className="border px-4 py-4 rounded-md bg-gray-200 drop-shadow-lg">
-          <h1 className="text-black text-xl mb-4 text-center">
+        <div className="border px-4 py-4 rounded-md bg-white drop-shadow-lg">
+          <h1 className="text-black text-lg font-bold mb-6 text-center">
             Create New Employee
           </h1>
-          <CloudinaryUploadWidget urlDetector={imageAdder} />
-          <input
-            type="text"
-            placeholder="Name"
-            className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
-            value={form.fullname}
-            onChange={(e) => setForm({ ...form, fullname: e.target.value })}
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
-            value={form.password}
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
-          />
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
-            value={form.confirmPassword}
-            onChange={(e) =>
-              setForm({ ...form, confirmPassword: e.target.value })
-            }
-          />
-          <input
-            type="number"
-            placeholder="Hourly Paid Rate"
-            className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
-            value={form.hourlyPaidRate}
-            onChange={(e) =>
-              setForm({ ...form, hourlyPaidRate: e.target.value })
-            }
-          />
-          <input
-            type="text"
-            placeholder="NRC"
-            className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
-            value={form.nrc}
-            onChange={(e) => setForm({ ...form, nrc: e.target.value })}
-          />
-          <input
-            type="date"
-            placeholder="Date Of Bitrh"
-            className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
-            value={form.dateOfBirth}
-            onChange={(e) => setForm({ ...form, dateOfBirth: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="Education"
-            className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
-            value={form.education}
-            onChange={(e) => setForm({ ...form, education: e.target.value })}
-          />
-          <select
-            className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
-            value={form.role}
-            onChange={(e) => setForm({ ...form, role: e.target.value })}
-          >
-            {role ? (
-              role.map((item, key) => {
-                return (
-                  <option key={key} value={item._id}>
-                    {item.role}
-                  </option>
-                );
-              })
-            ) : (
-              <option value="">Loading...</option>
-            )}
-          </select>
+          <div className="flex items-center gap-4">
+            <input
+              type="text"
+              placeholder="Name"
+              className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
+              value={form.fullname}
+              onChange={(e) => setForm({ ...form, fullname: e.target.value })}
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+            />
+          </div>
+          <div className="flex items-center gap-4">
+            <input
+              type="password"
+              placeholder="Password"
+              className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+            />
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
+              value={form.confirmPassword}
+              onChange={(e) =>
+                setForm({ ...form, confirmPassword: e.target.value })
+              }
+            />
+          </div>
+          <div className="flex items-center gap-4">
+            <input
+              type="number"
+              placeholder="Hourly Paid Rate"
+              className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
+              value={form.hourlyPaidRate}
+              onChange={(e) =>
+                setForm({ ...form, hourlyPaidRate: e.target.value })
+              }
+            />
+            <input
+              type="text"
+              placeholder="NRC"
+              className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
+              value={form.nrc}
+              onChange={(e) => setForm({ ...form, nrc: e.target.value })}
+            />
+          </div>
+          <div className="flex items-center gap-4">
+            <input
+              type="date"
+              placeholder="Date Of Bitrh"
+              className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
+              value={form.dateOfBirth}
+              onChange={(e) =>
+                setForm({ ...form, dateOfBirth: e.target.value })
+              }
+            />
+            <input
+              type="text"
+              placeholder="Education"
+              className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
+              value={form.education}
+              onChange={(e) => setForm({ ...form, education: e.target.value })}
+            />
+          </div>
+          <div className="flex items-center gap-4">
+            <select
+              className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
+              value={form.role}
+              onChange={(e) => setForm({ ...form, role: e.target.value })}
+            >
+              {role ? (
+                role.map((item, key) => {
+                  return (
+                    <option key={key} value={item._id}>
+                      {item.role}
+                    </option>
+                  );
+                })
+              ) : (
+                <option value="">Loading...</option>
+              )}
+            </select>
 
-          <div className="flex">
+            <CloudinaryUploadWidget urlDetector={imageAdder} />
+          </div>
+
+          <div className="flex justify-end items-center mt-6 mb-2">
             <button
-              className="uppercase outline-none text-sm text-red-700 rounded-md w-32 px-2 py-1 mb-2"
+              className="outline-none text-sm text-red-700 rounded-md w-32 px-4 py-2"
               onClick={() => {
                 setForm({
                   fullname: "",
@@ -300,13 +319,13 @@ const Employee = () => {
                 setOpenModel(false);
               }}
             >
-              Cancel
+              <p className="text-sm font-semibold">Cancel</p>
             </button>
             <button
-              className="uppercase outline-none text-sm bg-green-700 text-white rounded-md w-32 px-2 py-1 mb-2"
+              className="outline-none text-sm bg-primary text-white rounded-md w-32 px-4 py-2"
               onClick={empCreator}
             >
-              Save
+              <p className="text-sm font-semibold">Save</p>
             </button>
           </div>
         </div>

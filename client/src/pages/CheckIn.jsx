@@ -43,6 +43,11 @@ const CheckIn = () => {
   return (
     <Layout>
       <div className="px-4 pt-4">
+        <div className="mb-6 font-semibold text-xs text-gray-400 uppercase">
+          <span>Attendence</span>
+          <span className="px-1">/</span>
+          <span className="text-gray-500">List</span>
+        </div>
         <DataTable
           title="Attendance"
           columns={columns}
