@@ -22,7 +22,7 @@ const deviceFetcher = async (req, res) => {
   }
 };
 
-const deviceDeletor = async (req, res) => {
+const deviceDeleter = async (req, res) => {
   try {
     const fetchedDevice = await Device.findByIdAndDelete(req.body.id);
     return res.status(200).json({
@@ -310,6 +310,6 @@ module.exports = {
   accountCheckout,
   accountLeave,
   checkInStatusChcker,
-  deviceDeletor,
+  deviceDeleter,
   attendanceFetcher,
 };

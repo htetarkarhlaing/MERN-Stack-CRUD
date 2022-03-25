@@ -11,7 +11,13 @@ const payrollSchema = new Schema(
     totalWorkingHour: {
       type: Schema.Types.Number,
     },
+    hourlyPayRate: {
+      type: Schema.Types.Number,
+    },
     bonus: {
+      type: Schema.Types.Number,
+    },
+    totalAmount: {
       type: Schema.Types.Number,
     },
     date: {

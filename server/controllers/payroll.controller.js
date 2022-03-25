@@ -1,4 +1,4 @@
-const { Payroll, Attendance } = require("../models");
+const { Payroll, Attendance, Account } = require("../models");
 const moment = require("moment");
 
 // Get method for Roles
@@ -34,6 +34,8 @@ const payrollCreator = async (req, res) => {
     const totalAttendence = await Attendance.find({
       accountId: req.body.empId,
     });
+    const empdata = await Account.findById(req.body.empId);
+
     if (totalAttendence.length > 0) {
       let totalWorkingHour = 0;
       await totalAttendence.filter((att) => {
@@ -44,6 +46,8 @@ const payrollCreator = async (req, res) => {
       const newPayroll = new Payroll({
         empId: req.body.empId,
         totalWorkingHour: totalWorkingHour,
+        hourlyPayRate: empdata.hourlyPaidRate,
+        totalAmount: totalWorkingHour * empdata.hourlyPaidRate + req.body.bonus,
         bonus: req.body.bonus,
         date: new Date(),
         status: "pending",

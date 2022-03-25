@@ -22,6 +22,7 @@ routes.post("/api/roles/create", role.roleInserter);
 routes.get("/api/devices", device.deviceFetcher);
 routes.get("/api/attendence", device.attendanceFetcher);
 routes.post("/api/devices/create", device.deviceInserter);
+routes.delete("/api/devices/delete", device.deviceDeleter);
 routes.post("/api/devices/login", device.deviceLogin);
 routes.post("/api/devices/checkin", device.accountCheckin);
 routes.post("/api/devices/checkout", device.accountCheckout);
