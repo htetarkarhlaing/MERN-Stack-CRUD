@@ -171,15 +171,17 @@ const accountCheckout = async (req, res) => {
 
 const accountLeave = async (req, res) => {
   try {
-    const updateAtt = await Attendance.findByIdAndUpdate(req.body.id, {
-      leave: true,
+    const newLeave = new Attendance({
+      accountId: req.body.uid,
+      isLeave: true,
     });
+    const leave = await newLeave.save();
     return res.status(200).json({
       meta: {
         success: true,
         message: "leaved",
       },
-      data: updateAtt,
+      data: leave,
       self: req.originalUrl,
     });
   } catch (err) {
@@ -302,6 +304,109 @@ const attendanceFetcher = async (req, res) => {
   }
 };
 
+const attendanceFetcherByEmp = async (req, res) => {
+  let now = new Date();
+  let startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  try {
+    const payrollData = await Attendance.find({
+      accountId: req.params.emp,
+      createdAt: { $gte: startOfToday },
+    })
+      .populate("accountId", "-__v")
+      .populate("deviceId");
+    return res.status(200).json({
+      meta: {
+        success: true,
+        length: payrollData.length,
+      },
+      data: payrollData,
+      self: req.originalUrl,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      meta: {
+        success: false,
+        message: err,
+      },
+      self: req.originalUrl,
+    });
+  }
+};
+
+const attendanceFetcherByRange = async (req, res) => {
+  let start = new Date(req.params.start);
+  let startDate = new Date(
+    start.getFullYear(),
+    start.getMonth(),
+    start.getDate()
+  );
+
+  let end = new Date(req.params.end);
+  let endDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+
+  try {
+    const payrollData = await Attendance.find({
+      createdAt: { $gt: startDate, $lt: endDate },
+    })
+      .populate("accountId", "-__v")
+      .populate("deviceId");
+    return res.status(200).json({
+      meta: {
+        success: true,
+        length: payrollData.length,
+      },
+      data: payrollData,
+      self: req.originalUrl,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      meta: {
+        success: false,
+        message: err,
+      },
+      self: req.originalUrl,
+    });
+  }
+};
+
+const attendanceFetcherByRangeByEmp = async (req, res) => {
+  let start = new Date(req.params.start);
+  let startDate = new Date(
+    start.getFullYear(),
+    start.getMonth(),
+    start.getDate()
+  );
+
+  let end = new Date(req.params.end);
+  let endDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+
+  try {
+    const payrollData = await Attendance.find({
+      accountId: req.params.emp,
+      createdAt: { $gt: startDate, $lt: endDate },
+    })
+      .populate("accountId", "-__v")
+      .populate("deviceId");
+    return res.status(200).json({
+      meta: {
+        success: true,
+        length: payrollData.length,
+      },
+      data: payrollData,
+      self: req.originalUrl,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      meta: {
+        success: false,
+        message: err,
+      },
+      self: req.originalUrl,
+    });
+  }
+};
+
 module.exports = {
   deviceFetcher,
   deviceInserter,
@@ -312,4 +417,7 @@ module.exports = {
   checkInStatusChcker,
   deviceDeleter,
   attendanceFetcher,
+  attendanceFetcherByRange,
+  attendanceFetcherByEmp,
+  attendanceFetcherByRangeByEmp,
 };

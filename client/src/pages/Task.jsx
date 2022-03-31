@@ -43,6 +43,8 @@ const Task = () => {
     description: "",
     assignedTo: 0,
   });
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const taskFetcher = async () => {
     await fetch(`${URL}/api/tasks`, {
@@ -124,6 +126,26 @@ const Task = () => {
       });
   };
 
+  const searchPayrollByRange = async () => {
+    setTaskList([]);
+    setData([]);
+    await fetch(`${URL}/api/tasks/${startDate}/${endDate}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => res.json())
+      .then((resJson) => {
+        if (resJson.meta.success) {
+          setTaskList(resJson.data);
+        } else {
+          setTaskList([]);
+        }
+      })
+      .catch((err) => {
+        setTaskList([]);
+      });
+  };
+
   useEffect(() => {
     taskFetcher();
     empFetcher();
@@ -169,8 +191,36 @@ const Task = () => {
         </button>
       </div>
       <div className="px-4 pt-4">
-        <DataTable title="Task List" columns={columns} data={data} pagination />
+        <div className="w-full px-4 py-2 flex justify-between">
+          <span className="text-lg">Attendance List</span>
+          <div className="flex">
+            <div className="border p-1 rounded mr-2">
+              <span className="text-sm text-gray-500 mx-2">Start</span>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+            </div>
+
+            <div className="border p-1 rounded mr-2">
+              <span className="text-sm text-gray-500 mx-2">Start</span>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </div>
+
+            <div className="border p-1 px-2 rounded">
+              <button onClick={searchPayrollByRange}>Search</button>
+            </div>
+          </div>
+        </div>
+        <DataTable columns={columns} data={data} pagination />
       </div>
+
+      {/* model */}
       <div
         className={`${
           openModel ? "block" : "hidden"

@@ -28,6 +28,66 @@ const payrollListFetcher = async (req, res) => {
   }
 };
 
+const payrollListFetcherByRange = async (req, res) => {
+  let start = new Date(req.params.start);
+  let startDate = new Date(
+    start.getFullYear(),
+    start.getMonth(),
+    start.getDate()
+  );
+
+  let end = new Date(req.params.end);
+  let endDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+
+  try {
+    const payrollData = await Payroll.find({
+      createdAt: { $gt: startDate, $lt: endDate },
+    }).populate("empId");
+    return res.status(200).json({
+      meta: {
+        success: true,
+        length: payrollData.length,
+      },
+      data: payrollData,
+      self: req.originalUrl,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      meta: {
+        success: false,
+      },
+      self: req.originalUrl,
+    });
+  }
+};
+
+const payrollListFetcherByEmp = async (req, res) => {
+  let date = new Date();
+  let currentMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+
+  try {
+    const payrollData = await Payroll.find({
+      empId: req.params.emp,
+      createdAt: { $gt: currentMonth },
+    }).populate("empId");
+    return res.status(200).json({
+      meta: {
+        success: true,
+        length: payrollData.length,
+      },
+      data: payrollData,
+      self: req.originalUrl,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      meta: {
+        success: false,
+      },
+      self: req.originalUrl,
+    });
+  }
+};
+
 // Post method for Roles
 const payrollCreator = async (req, res) => {
   try {
@@ -88,4 +148,9 @@ const payrollCreator = async (req, res) => {
   }
 };
 
-module.exports = { payrollListFetcher, payrollCreator };
+module.exports = {
+  payrollListFetcher,
+  payrollCreator,
+  payrollListFetcherByRange,
+  payrollListFetcherByEmp,
+};

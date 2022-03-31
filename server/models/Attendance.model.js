@@ -6,7 +6,6 @@ const attendanceSchema = new Schema(
     deviceId: {
       type: Schema.Types.ObjectId,
       ref: "Device",
-      required: true,
     },
     accountId: {
       type: Schema.Types.ObjectId,

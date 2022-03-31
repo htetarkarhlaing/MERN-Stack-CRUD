@@ -54,6 +54,7 @@ const Device = () => {
   const checker = async () => {
     await axios
       .post(`${URL}/api/devices/${type}`, {
+        id: localStorage.getItem("att"),
         checkInTime: new Date(),
         checkOutTime: new Date(),
         leave: true,
@@ -134,18 +135,6 @@ const Device = () => {
             >
               Checkout
             </button>
-            <button
-              className={`${
-                type === "leave" ? "bg-red-600 text-white " : "bg-red-200"
-              } w-full mx-1 rounded-lg`}
-              onClick={() => {
-                if (type === "checkin") {
-                  setType("leave");
-                }
-              }}
-            >
-              Take Leave
-            </button>
           </div>
           <div className="mb-4">
             <span>Please login to continue!</span>
@@ -201,11 +190,7 @@ const Device = () => {
           ) : (
             <button
               className="border border-red-700 text-red-700 rounded-full hover:bg-red-700 hover:text-white"
-              onClick={() => {
-                if (type === "leave") {
-                  checker();
-                }
-              }}
+              onClick={() => setOpenModel(true)}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

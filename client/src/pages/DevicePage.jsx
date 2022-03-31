@@ -8,7 +8,12 @@ const DevicePage = () => {
   //instances
   const URL = process.env.REACT_APP_URL;
   const [openModel, setOpenModel] = useState(false);
+  const [count, setCount] = useState(0);
   const [deviceList, setDeviceList] = useState();
+  const [form, setForm] = useState({
+    deviceId: "",
+    passcode: "",
+  });
 
   const deviceListFetcher = async () => {
     await fetch(`${URL}/api/devices`, {
@@ -28,9 +33,76 @@ const DevicePage = () => {
       });
   };
 
+  const deviceCreator = async () => {
+    await fetch(`${URL}/api/devices/create`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        deviceId: form.deviceId,
+        passCode: form.passcode,
+      }),
+    })
+      .then((res) => res.json())
+      .then((resJson) => {
+        if (resJson.meta.success) {
+          setForm({
+            deviceId: "",
+            passCode: "",
+          });
+          setOpenModel(false);
+          window.alert("Success");
+          deviceListFetcher();
+        } else {
+          setForm({
+            deviceId: "",
+            passCode: "",
+          });
+          setOpenModel(false);
+          window.alert("Something went wrong!");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setForm({
+          deviceId: "",
+          passCode: "",
+        });
+        setOpenModel(false);
+        window.alert("Something went wrong!");
+      });
+  };
+
+  const deviceDeleter = async (id) => {
+    await fetch(`${URL}/api/devices/delete`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: id,
+      }),
+    })
+      .then((res) => res.json())
+      .then((resJson) => {
+        if (resJson.meta.success) {
+          window.alert("Success");
+          deviceListFetcher();
+        } else {
+          window.alert("Failed");
+        }
+      })
+      .catch((err) => {
+        window.alert("Failed");
+      });
+  };
+
   useEffect(() => {
     deviceListFetcher();
   }, []);
+
+  useEffect(() => {
+    console.log("useeffect count", count);
+  }, []);
+
+  console.log("count", count);
 
   return (
     <Layout>
@@ -45,9 +117,9 @@ const DevicePage = () => {
 
         <button
           className="outline-none px-4 py-2 bg-gray-200 rounded-lg"
-          onClick={() => setOpenModel(true)}
+          onClick={() => setCount(count + 1)}
         >
-          Create New Deivice
+          Create New Device
         </button>
       </div>
       <div className="w-full pt-4 px-4 grid grid-cols-12 gap-4">
@@ -69,7 +141,10 @@ const DevicePage = () => {
                       <Moment date={i.createdAt} format="YYYY-MM-DD" />
                     </span>
                     <div className="flex w-full mb-2 mt-2">
-                      <button className="w-full mx-2 bg-red-500 text-white py-1 rounded-md px-1">
+                      <button
+                        className="w-full mx-2 bg-red-500 text-white py-1 rounded-md px-1"
+                        onClick={() => deviceDeleter(i._id)}
+                      >
                         Delete
                       </button>
                     </div>
@@ -78,6 +153,54 @@ const DevicePage = () => {
               );
             })
           : "loading..."}
+      </div>
+
+      {/* model */}
+      <div
+        className={`${
+          openModel ? "block" : "hidden"
+        } absolute top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-25 backdrop-blur-sm`}
+      >
+        <div className="border px-4 py-4 rounded-md bg-white drop-shadow-lg">
+          <h1 className="text-black text-xl mb-4 text-center">
+            Create New Device
+          </h1>
+          <input
+            type="text"
+            placeholder="Device ID"
+            className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
+            value={form.deviceId}
+            onChange={(e) => setForm({ ...form, deviceId: e.target.value })}
+          />
+          <input
+            type="text"
+            placeholder="Passcode"
+            className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
+            value={form.passcode}
+            onChange={(e) => setForm({ ...form, passcode: e.target.value })}
+          />
+
+          <div className="flex justify-end items-center mt-6 mb-2">
+            <button
+              className="outline-none text-sm text-red-700 rounded-md w-32 px-4 py-2"
+              onClick={() => {
+                setForm({
+                  deviceId: "",
+                  passcode: "",
+                });
+                setOpenModel(false);
+              }}
+            >
+              <p className="text-sm font-semibold">Cancel</p>
+            </button>
+            <button
+              className="outline-none text-sm bg-primary text-white rounded-md w-32 px-4 py-2"
+              onClick={deviceCreator}
+            >
+              <p className="text-sm font-semibold">Save</p>
+            </button>
+          </div>
+        </div>
       </div>
     </Layout>
   );

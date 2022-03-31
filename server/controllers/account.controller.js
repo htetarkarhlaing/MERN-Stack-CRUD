@@ -22,6 +22,26 @@ const accountFetcher = async (req, res) => {
   }
 };
 
+const accountDeleter = async (req, res) => {
+  try {
+    const deletedAccount = await Account.findByIdAndDelete(req.params.id);
+    return res.status(200).json({
+      meta: {
+        success: true,
+      },
+      data: deletedAccount,
+      self: req.originalUrl,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      meta: {
+        success: false,
+      },
+      self: req.originalUrl,
+    });
+  }
+};
+
 const accountDetailFetcher = async (req, res) => {
   try {
     const fetchedDevice = await Account.findById(req.params.id).populate(
@@ -104,17 +124,21 @@ const accountInserter = async (req, res) => {
 
 const accountUpdater = async (req, res) => {
   try {
-    const accountUpdater = await Account.findByIdAndUpdate(req.body.id, {
-      email: req.body.email,
-      password: req.body.password,
-      fullname: req.body.fullname,
-      hourlyPaidRate: req.body.hourlyPaidRate,
-      img: req.body.img,
-      nrc: req.body.nrc,
-      department: req.body.department,
-      dateOfBirth: req.body.dateOfBirth,
-      education: req.body.education,
-    });
+    const accountUpdater = await Account.findOneAndUpdate(
+      { _id: req.body.id },
+      {
+        $set: {
+          email: req.body.email,
+          fullname: req.body.fullname,
+          hourlyPaidRate: req.body.hourlyPaidRate,
+          img: req.body.img,
+          nrc: req.body.nrc,
+          department: req.body.department,
+          dateOfBirth: req.body.dateOfBirth,
+          education: req.body.education,
+        },
+      }
+    );
 
     return res.status(201).json({
       meta: {
@@ -124,6 +148,7 @@ const accountUpdater = async (req, res) => {
       self: req.originalUrl,
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({
       meta: {
         success: false,
@@ -234,6 +259,7 @@ const profileDataFetcher = async (req, res) => {
 
 module.exports = {
   accountFetcher,
+  accountDeleter,
   accountInserter,
   staffFetcher,
   accountLogin,

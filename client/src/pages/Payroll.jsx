@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import Layout from "../Layout";
 import { Link } from "react-router-dom";
@@ -14,16 +15,16 @@ const columns = [
     selector: (row) => row.wokinghour,
   },
   {
+    name: "Hourly Pay Rate",
+    selector: (row) => row.payRate,
+  },
+  {
     name: "Bonus",
     selector: (row) => row.bonus,
   },
   {
     name: "Total",
     selector: (row) => row.totalAmount,
-  },
-  {
-    name: "Status",
-    selector: (row) => row.status,
   },
 ];
 
@@ -33,13 +34,17 @@ const Payroll = () => {
   const [openModel, setOpenModel] = useState(false);
   const [empList, setEmpList] = useState();
   const [payrollList, setPayrollList] = useState([]);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [data, setData] = useState([]);
   const [form, setForm] = useState({
     emp: 0,
     bonus: 0,
   });
 
-  const taskFetcher = async () => {
+  const payrollFetcher = async () => {
+    setPayrollList([]);
+    setData([]);
     await fetch(`${URL}/api/payroll`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -57,9 +62,28 @@ const Payroll = () => {
       });
   };
 
-  console.log(payrollList);
+  const searchPayrollByRange = async () => {
+    setData([]);
+    setPayrollList([]);
+    await fetch(`${URL}/api/payroll/${startDate}/${endDate}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => res.json())
+      .then((resJson) => {
+        if (resJson.meta.success) {
+          setPayrollList(resJson.data);
+        } else {
+          setPayrollList([]);
+        }
+      })
+      .catch((err) => {
+        setPayrollList([]);
+      });
+  };
 
   const empFetcher = async () => {
+    setEmpList([]);
     await fetch(`${URL}/api/accounts/staff`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -95,7 +119,7 @@ const Payroll = () => {
           });
           setOpenModel(false);
           window.alert("Success");
-          taskFetcher();
+          payrollFetcher();
         } else {
           setForm({
             emp: 0,
@@ -117,7 +141,7 @@ const Payroll = () => {
   };
 
   useEffect(() => {
-    taskFetcher();
+    payrollFetcher();
     empFetcher();
   }, []);
 
@@ -129,11 +153,11 @@ const Payroll = () => {
           ...data,
           {
             id: item._id,
-            emp: item.empId.fullname,
+            emp: item.empId.fullname ? item.empId.fullname : "",
             wokinghour: item.totalWorkingHour,
+            payRate: item.hourlyPayRate || 0,
             bonus: item.bonus,
-            totalAmount: item.totalWorkingHour + item.bonus,
-            status: item.status,
+            totalAmount: item.totalAmount,
           },
         ]);
       });
@@ -158,13 +182,34 @@ const Payroll = () => {
           <p className="font-semibold text-white text-sm">Caculate Payroll</p>
         </button>
       </div>
+      <div className="w-full px-4 py-2 flex justify-between">
+        <span className="text-lg">Payroll List</span>
+        <div className="flex">
+          <div className="border p-1 rounded mr-2">
+            <span className="text-sm text-gray-500 mx-2">Start</span>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+          </div>
+
+          <div className="border p-1 rounded mr-2">
+            <span className="text-sm text-gray-500 mx-2">Start</span>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+          </div>
+
+          <div className="border p-1 px-2 rounded">
+            <button onClick={searchPayrollByRange}>Search</button>
+          </div>
+        </div>
+      </div>
       <div className="px-4 pt-4">
-        <DataTable
-          title="Payroll List"
-          columns={columns}
-          data={data}
-          pagination
-        />
+        <DataTable columns={columns} data={data} pagination />
       </div>
 
       <div
