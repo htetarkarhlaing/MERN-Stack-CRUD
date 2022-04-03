@@ -7,6 +7,7 @@ import { Icons } from "../assets";
 const links = [
   { label: "Dashboard", link: "/", icons: Icons.Dashboard },
   { label: "Employees", link: "/employee", icons: Icons.Employees },
+  { label: "Admins", link: "/admin", icons: Icons.Employees },
   { label: "Payroll", link: "/payroll", icons: Icons.Payroll },
   { label: "Attendance", link: "/attendance", icons: Icons.Attendence },
   { label: "Device", link: "/device-page", icons: Icons.Device },

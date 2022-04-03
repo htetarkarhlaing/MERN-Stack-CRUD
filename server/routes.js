@@ -8,10 +8,11 @@ routes.get("/", (req, res) => {
 // account
 routes.get("/api/accounts", account.accountFetcher);
 routes.get("/api/dashbaord", account.profileDataFetcher);
-routes.get("/api/accounts/staff", account.staffFetcher);
+routes.get("/api/accounts/:role", account.staffFetcher);
 routes.get("/api/accounts/detail/:id", account.accountDetailFetcher);
 routes.delete("/api/accounts/delete/:id", account.accountDeleter);
 routes.put("/api/accounts/update", account.accountUpdater);
+routes.put("/api/accounts/password-update", account.accountPasswordUpdate);
 routes.post("/api/accounts/create", account.accountInserter);
 routes.post("/api/accounts/login", account.accountLogin);
 

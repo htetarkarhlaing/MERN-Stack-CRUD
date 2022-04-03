@@ -1,3 +1,5 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import Layout from "../Layout";
 import { Link } from "react-router-dom";
@@ -146,30 +148,32 @@ const Task = () => {
       });
   };
 
+  const dataBuilder = async () => {
+    if (taskList.length > 0) {
+      setData([]);
+      var temp = [];
+      await taskList.map((item) => {
+        temp.push({
+          id: item._id,
+          title: item.title,
+          description: item.description,
+          assignedTo: item.assignedTo.fullname,
+          assignedBy: item.assignedBy.fullname,
+          remark: item.remark,
+          status: item.status,
+        });
+      });
+      setData(temp);
+    }
+  };
+
   useEffect(() => {
     taskFetcher();
     empFetcher();
   }, []);
 
   useEffect(() => {
-    if (taskList.length > 0) {
-      console.log(taskList);
-      setData([]);
-      taskList.map((item) => {
-        setData([
-          ...data,
-          {
-            id: item._id,
-            title: item.title,
-            description: item.description,
-            assignedTo: item.assignedTo.fullname,
-            assignedBy: item.assignedBy.fullname,
-            remark: item.remark,
-            status: item.status,
-          },
-        ]);
-      });
-    }
+    dataBuilder();
   }, [taskList]);
 
   return (

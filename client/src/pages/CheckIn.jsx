@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable array-callback-return */
 import React, { useState, useEffect } from "react";
 import Layout from "../Layout";
 import DataTable from "react-data-table-component";
@@ -29,13 +31,13 @@ const columns = [
 const CheckIn = () => {
   //instances
   const URL = process.env.REACT_APP_URL;
-  const [taskList, setTaskList] = useState([]);
+  const [attList, setAttList] = useState([]);
   const [data, setData] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
   const taskFetcher = async () => {
-    setTaskList([]);
+    setAttList([]);
     setData([]);
     await fetch(`${URL}/api/attendence`, {
       method: "GET",
@@ -45,18 +47,18 @@ const CheckIn = () => {
       .then((resJson) => {
         console.log(resJson);
         if (resJson.meta.success) {
-          setTaskList(resJson.data);
+          setAttList(resJson.data);
         } else {
-          setTaskList([]);
+          setAttList([]);
         }
       })
       .catch((err) => {
-        setTaskList([]);
+        setAttList([]);
       });
   };
 
   const searchPayrollByRange = async () => {
-    setTaskList([]);
+    setAttList([]);
     setData([]);
     await fetch(`${URL}/api/attendence/${startDate}/${endDate}`, {
       method: "GET",
@@ -66,14 +68,36 @@ const CheckIn = () => {
       .then((resJson) => {
         console.log(resJson);
         if (resJson.meta.success) {
-          setTaskList(resJson.data);
+          setAttList(resJson.data);
         } else {
-          setTaskList([]);
+          setAttList([]);
         }
       })
       .catch((err) => {
-        setTaskList([]);
+        setAttList([]);
       });
+  };
+
+  const dataBuilder = async () => {
+    if (attList.length > 0) {
+      setData([]);
+      var temp = [];
+      await attList.map((item) => {
+        temp.push({
+          id: item._id,
+          employee: item.accountId.fullname || "",
+          device: item.deviceId ? item.deviceId.deviceId : "Self",
+          checkedInTime: item.checkInTime
+            ? moment(item.checkInTime).format("YYYY-MM-DD hh:mm:ss A")
+            : "-",
+          checkedOutTime: item.checkOutTime
+            ? moment(item.checkOutTime).format("YYYY-MM-DD hh:mm:ss A")
+            : "-",
+          leave: item.isLeave ? "Leave" : "Not Leave",
+        });
+      });
+      setData(temp);
+    }
   };
 
   useEffect(() => {
@@ -81,28 +105,11 @@ const CheckIn = () => {
   }, []);
 
   useEffect(() => {
-    if (taskList.length > 0) {
-      setData([]);
-      taskList.map((item) => {
-        console.log(item);
-        setData([
-          ...data,
-          {
-            id: item._id,
-            employee: item.accountId.fullname || "",
-            device: item.deviceId ? item.deviceId.deviceId : "Self",
-            checkedInTime: item.checkInTime
-              ? moment(item.checkInTime).format("YYYY-MM-DD hh:mm:ss A")
-              : "-",
-            checkedOutTime: item.checkOutTime
-              ? moment(item.checkOutTime).format("YYYY-MM-DD hh:mm:ss A")
-              : "-",
-            leave: item.isLeave ? "Leave" : "Not Leave",
-          },
-        ]);
-      });
-    }
-  }, [taskList]);
+    dataBuilder();
+  }, [attList]);
+
+  console.log(attList);
+  console.log(data);
 
   return (
     <Layout>
@@ -125,7 +132,7 @@ const CheckIn = () => {
             </div>
 
             <div className="border p-1 rounded mr-2">
-              <span className="text-sm text-gray-500 mx-2">Start</span>
+              <span className="text-sm text-gray-500 mx-2">End</span>
               <input
                 type="date"
                 value={endDate}

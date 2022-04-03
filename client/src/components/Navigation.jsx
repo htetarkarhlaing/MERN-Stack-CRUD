@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 //instances
 const URL = process.env.REACT_APP_URL;
@@ -28,9 +29,11 @@ const Navigation = ({ leave }) => {
 
   return (
     <div className="w-full h-16 bg-primary flex items-center px-10 justify-between">
-      <div>
-        <p className="text-white font-bold">EMP-MGN</p>
-      </div>
+      <Link to="/">
+        <div>
+          <p className="text-white font-bold">EMP-MGN</p>
+        </div>
+      </Link>
       <div className="flex gap-4">
         {leave ? (
           <button onClick={leaveHandler}>
@@ -39,6 +42,18 @@ const Navigation = ({ leave }) => {
         ) : (
           ""
         )}
+
+        <Link
+          to={{
+            pathname: `/profile`,
+            state: {
+              id: localStorage.getItem("uid"),
+              // fullname: localStorage.getItem("fullname"),
+            },
+          }}
+        >
+          <span className="text-sm text-white font-semibold">Profile</span>
+        </Link>
 
         <button
           onClick={() => {

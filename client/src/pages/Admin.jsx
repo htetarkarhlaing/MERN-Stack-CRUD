@@ -6,7 +6,7 @@ import Moment from "react-moment";
 import "moment-timezone";
 import CloudinaryUploadWidget from "../components/CloudinaryWidget";
 
-const Employee = () => {
+const Admin = () => {
   //instances
   const URL = process.env.REACT_APP_URL;
   const [openModel, setOpenModel] = useState(false);
@@ -23,7 +23,7 @@ const Employee = () => {
     department: "",
     dateOfBirth: "",
     education: "",
-    role: "623706512618ba2b199a9169",
+    role: "6237064c2618ba2b199a9167",
   });
 
   const imageAdder = (url) => {
@@ -52,7 +52,7 @@ const Employee = () => {
   };
 
   const empFetcher = async () => {
-    await fetch(`${URL}/api/accounts/623706512618ba2b199a9169`, {
+    await fetch(`${URL}/api/accounts/6237064c2618ba2b199a9167`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     })
@@ -176,16 +176,13 @@ const Employee = () => {
                         {i.email}
                       </p>
                       <p className="text-sm font-semibold text-gray-400">
-                        ${i.hourlyPaidRate} Per Hour
-                      </p>
-                      <p className="text-sm font-semibold text-gray-400">
                         <Moment date={i.createdAt} format="YYYY-MM-DD" />
                       </p>
                     </div>
                     <div className="flex w-full mb-2 mt-2">
                       <Link
                         to={{
-                          pathname: `/employee/detail`,
+                          pathname: `/admin/detail`,
                           state: {
                             id: i._id,
                             fullname: i.fullname,
@@ -211,7 +208,7 @@ const Employee = () => {
       >
         <div className="border px-4 py-4 rounded-md bg-white drop-shadow-lg">
           <h1 className="text-black text-lg font-bold mb-6 text-center">
-            Create New Employee
+            Create New Admin
           </h1>
           <div className="flex items-center gap-4">
             <input
@@ -249,23 +246,12 @@ const Employee = () => {
           </div>
           <div className="flex items-center gap-4">
             <input
-              type="number"
-              placeholder="Hourly Paid Rate"
-              className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
-              value={form.hourlyPaidRate}
-              onChange={(e) =>
-                setForm({ ...form, hourlyPaidRate: e.target.value })
-              }
-            />
-            <input
               type="text"
               placeholder="NRC"
               className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
               value={form.nrc}
               onChange={(e) => setForm({ ...form, nrc: e.target.value })}
             />
-          </div>
-          <div className="flex items-center gap-4">
             <input
               type="date"
               placeholder="Date Of Bitrh"
@@ -275,14 +261,8 @@ const Employee = () => {
                 setForm({ ...form, dateOfBirth: e.target.value })
               }
             />
-            <input
-              type="text"
-              placeholder="Education"
-              className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
-              value={form.education}
-              onChange={(e) => setForm({ ...form, education: e.target.value })}
-            />
           </div>
+
           <div className="flex items-center gap-4">
             <select
               className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
@@ -344,4 +324,4 @@ const Employee = () => {
   );
 };
 
-export default Employee;
+export default Admin;

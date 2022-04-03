@@ -69,7 +69,7 @@ const accountDetailFetcher = async (req, res) => {
 const staffFetcher = async (req, res) => {
   try {
     const fetchedDevice = await Account.find({
-      role: "623706512618ba2b199a9169",
+      role: req.params.role,
     }).populate("role", "-__v");
     return res.status(200).json({
       meta: {
@@ -147,6 +147,46 @@ const accountUpdater = async (req, res) => {
       data: accountUpdater,
       self: req.originalUrl,
     });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      meta: {
+        success: false,
+      },
+      self: req.originalUrl,
+    });
+  }
+};
+
+const accountPasswordUpdate = async (req, res) => {
+  try {
+    const accountUpdater = await Account.findOneAndUpdate(
+      { _id: req.body.id, password: req.body.password },
+      {
+        $set: {
+          password: req.body.newPassword,
+        },
+      }
+    );
+    if(accountUpdater !== null) {
+      return res.status(201).json({
+        meta: {
+          success: true,
+        },
+        data: accountUpdater,
+        self: req.originalUrl,
+      });
+    }
+    else {
+      return res.status(404).json({
+        meta: {
+          success: false,
+        },
+        self: req.originalUrl,
+      });
+    }
+
+   
   } catch (err) {
     console.log(err);
     return res.status(500).json({
@@ -266,4 +306,5 @@ module.exports = {
   accountDetailFetcher,
   accountUpdater,
   profileDataFetcher,
+  accountPasswordUpdate,
 };

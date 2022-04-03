@@ -11,6 +11,10 @@ import Device from "./pages/Device";
 import EmployeeDetail from "./pages/EmployeeDetail";
 import DevicePage from "./pages/DevicePage";
 import UserDashboard from "./pages/UserDashboard";
+import Profile from "./pages/Profile"
+import EmpProfile from "./pages/EmpProfile";
+import Admin from "./pages/Admin";
+import AdminDetail from "./pages/AdminDetail";
 
 const Routes = () => {
   const [mounted, setMounted] = useState(false);
@@ -60,7 +64,10 @@ const UserRoutes = () => {
           {" "}
           <Route exact path="/" component={Dashboard} />
           <Route exact path="/employee" component={Employee} />
+          <Route exact path="/admin" component={Admin} />
+          <Route path="/admin/detail" component={AdminDetail} />
           <Route path="/employee/detail" component={EmployeeDetail} />
+          <Route path="/profile" component={Profile} />
           <Route path="/payroll" component={Payroll} />
           <Route path="/attendance" component={CheckIn} />
           <Route path="/task" component={Task} />
@@ -70,6 +77,7 @@ const UserRoutes = () => {
         <>
           {" "}
           <Route exact path="/" component={UserDashboard} />
+          <Route path="/profile" component={EmpProfile} />
           {/* <Route path="/employee" component={Employee} />
           <Route path="/payroll" component={Payroll} />
           <Route path="/attendance" component={CheckIn} />

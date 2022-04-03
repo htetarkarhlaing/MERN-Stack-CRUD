@@ -3,12 +3,12 @@ const moment = require("moment");
 
 // Get method for Roles
 const payrollListFetcher = async (req, res) => {
-  let now = new Date();
-  let startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  let date = new Date();
+  let currentMonth = new Date(date.getFullYear(), date.getMonth(), 1);
 
   try {
     const payrollData = await Payroll.find({
-      createdAt: { $gte: startOfToday },
+      createdAt: { $gte: currentMonth },
     }).populate("empId");
     return res.status(200).json({
       meta: {

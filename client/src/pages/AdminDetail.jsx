@@ -4,7 +4,7 @@ import Layout from "../Layout";
 import { useLocation, Link } from "react-router-dom";
 import CloudinaryUploadWidget from "../components/CloudinaryWidget";
 
-const EmployeeDetail = () => {
+const AdminDetail = () => {
   const URL = process.env.REACT_APP_URL;
   const location = useLocation();
   const [openModel, setOpenModel] = useState(false);
@@ -12,10 +12,8 @@ const EmployeeDetail = () => {
   const [form, setForm] = useState({
     fullname: "",
     email: "",
-    hourlyPaidRate: "",
     img: "",
     nrc: "",
-    department: "",
     dateOfBirth: "",
     education: "",
     role: "",
@@ -35,10 +33,8 @@ const EmployeeDetail = () => {
           setForm({
             fullname: resJson.data.fullname,
             email: resJson.data.email,
-            hourlyPaidRate: resJson.data.hourlyPaidRate,
             img: resJson.data.img,
             nrc: resJson.data.nrc,
-            department: resJson.data.department,
             dateOfBirth: resJson.data.dateOfBirth,
             education: resJson.data.education,
             role: resJson.data.role.role,
@@ -47,10 +43,8 @@ const EmployeeDetail = () => {
           setForm({
             fullname: "",
             email: "",
-            hourlyPaidRate: "",
             img: "",
             nrc: "",
-            department: "",
             dateOfBirth: "",
             education: "",
           });
@@ -60,10 +54,8 @@ const EmployeeDetail = () => {
         setForm({
           fullname: "",
           email: "",
-          hourlyPaidRate: "",
           img: "",
           nrc: "",
-          department: "",
           dateOfBirth: "",
           education: "",
         });
@@ -83,7 +75,7 @@ const EmployeeDetail = () => {
       .then((resJson) => {
         if (resJson.meta.success) {
           window.alert("Account deleted successfully");
-          window.location.href = "/employee";
+          window.location.href = "/admin";
         } else {
           window.alert("Account deleted failed");
         }
@@ -108,10 +100,8 @@ const EmployeeDetail = () => {
       body: JSON.stringify({
         fullname: form.fullname,
         email: form.email,
-        hourlyPaidRate: form.hourlyPaidRate,
         img: form.img,
         nrc: form.nrc,
-        department: form.department,
         dateOfBirth: form.dateOfBirth,
         education: form.education,
         id: location.state.id,
@@ -121,7 +111,7 @@ const EmployeeDetail = () => {
       .then((resJson) => {
         if (resJson.meta.success) {
           window.alert("Account updated successfully");
-          window.location.href = "/employee";
+          window.location.href = "/admin";
         } else {
           window.alert("Account updated failed");
         }
@@ -137,7 +127,7 @@ const EmployeeDetail = () => {
       <div className="w-full h-10 mt-2 px-4 flex justify-between items-center">
         <Link to="/employee">
           <div className="font-bold text-sm text-gray-400 uppercase">
-            <span>Employees</span>
+            <span>Admin</span>
             <span className="px-1">/</span>
             <span className="text-gray-500">{location.state.fullname}</span>
           </div>
@@ -173,11 +163,6 @@ const EmployeeDetail = () => {
             <div className="col-span-4">Education :</div>
             <div className="col-span-8">
               {form && form.education ? form.education : ""}
-            </div>
-
-            <div className="col-span-4">Department :</div>
-            <div className="col-span-8">
-              {form && form.department ? form.department : ""}
             </div>
 
             <div className="col-span-4">Role :</div>
@@ -297,4 +282,4 @@ const EmployeeDetail = () => {
   );
 };
 
-export default EmployeeDetail;
+export default AdminDetail;

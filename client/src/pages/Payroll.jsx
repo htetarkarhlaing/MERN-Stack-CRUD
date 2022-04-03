@@ -1,7 +1,9 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import Layout from "../Layout";
 import { Link } from "react-router-dom";
+import moment from "moment";
 
 import DataTable from "react-data-table-component";
 
@@ -25,6 +27,10 @@ const columns = [
   {
     name: "Total",
     selector: (row) => row.totalAmount,
+  },
+  {
+    name: "Created At",
+    selector: (row) => row.createdAt,
   },
 ];
 
@@ -140,28 +146,32 @@ const Payroll = () => {
       });
   };
 
+  const dataBuilder = async () => {
+    if (payrollList.length > 0) {
+      setData([]);
+      var temp = [];
+      await payrollList.map((item) => {
+        temp.push({
+          id: item._id,
+          emp: item.empId.fullname ? item.empId.fullname : "",
+          wokinghour: item.totalWorkingHour,
+          payRate: item.hourlyPayRate || 0,
+          bonus: item.bonus,
+          totalAmount: item.totalAmount,
+          createdAt: moment(item.createdAt).format("DD-MM-YYYY"),
+        });
+      });
+      setData(temp);
+    }
+  };
+
   useEffect(() => {
     payrollFetcher();
     empFetcher();
   }, []);
 
   useEffect(() => {
-    if (payrollList.length > 0) {
-      setData([]);
-      payrollList.map((item) => {
-        setData([
-          ...data,
-          {
-            id: item._id,
-            emp: item.empId.fullname ? item.empId.fullname : "",
-            wokinghour: item.totalWorkingHour,
-            payRate: item.hourlyPayRate || 0,
-            bonus: item.bonus,
-            totalAmount: item.totalAmount,
-          },
-        ]);
-      });
-    }
+    dataBuilder();
   }, [payrollList]);
 
   return (

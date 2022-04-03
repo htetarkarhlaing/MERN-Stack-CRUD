@@ -1,13 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
-import Layout from "../Layout";
+import UserLayout from "../Layout/User";
 import { useLocation, Link } from "react-router-dom";
 import CloudinaryUploadWidget from "../components/CloudinaryWidget";
 
-const EmployeeDetail = () => {
+const EmpProfile = () => {
   const URL = process.env.REACT_APP_URL;
   const location = useLocation();
   const [openModel, setOpenModel] = useState(false);
+  const [openPasswordModel, setOpenPasswordModel] = useState(false);
 
   const [form, setForm] = useState({
     fullname: "",
@@ -19,6 +20,12 @@ const EmployeeDetail = () => {
     dateOfBirth: "",
     education: "",
     role: "",
+  });
+
+  const [credential, setCredential] = useState({
+    password: "",
+    newPassword: "",
+    confirmNewPassword: "",
   });
 
   const empDetailFetcher = async () => {
@@ -70,29 +77,39 @@ const EmployeeDetail = () => {
       });
   };
 
+  const accountPasswordReset = async () => {
+    if (credential.newPassword === credential.confirmNewPassword) {
+      await fetch(`${URL}/api/accounts/password-update/`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: location.state.id,
+          password: credential.password,
+          newPassword: credential.newPassword,
+        }),
+      })
+        .then((res) => res.json())
+        .then((resJson) => {
+          if (resJson.meta.success) {
+            window.alert("Account updated successfully");
+            localStorage.clear();
+            window.location.href = "/";
+          } else {
+            window.alert("Account updated failed");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          window.alert("somthing went wrong");
+        });
+    } else {
+      window.alert("Password did not match.");
+    }
+  };
+
   useEffect(() => {
     empDetailFetcher();
   }, [location.state.id]);
-
-  const accountDeleter = async () => {
-    await fetch(`${URL}/api/accounts/delete/${location.state.id}`, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-    })
-      .then((res) => res.json())
-      .then((resJson) => {
-        if (resJson.meta.success) {
-          window.alert("Account deleted successfully");
-          window.location.href = "/employee";
-        } else {
-          window.alert("Account deleted failed");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        window.alert("somthing went wrong");
-      });
-  };
 
   const imageAdder = (url) => {
     setForm({
@@ -121,7 +138,7 @@ const EmployeeDetail = () => {
       .then((resJson) => {
         if (resJson.meta.success) {
           window.alert("Account updated successfully");
-          window.location.href = "/employee";
+          window.location.href = "/profile";
         } else {
           window.alert("Account updated failed");
         }
@@ -133,18 +150,8 @@ const EmployeeDetail = () => {
   };
 
   return (
-    <Layout>
-      <div className="w-full h-10 mt-2 px-4 flex justify-between items-center">
-        <Link to="/employee">
-          <div className="font-bold text-sm text-gray-400 uppercase">
-            <span>Employees</span>
-            <span className="px-1">/</span>
-            <span className="text-gray-500">{location.state.fullname}</span>
-          </div>
-        </Link>
-      </div>
-
-      <div className="w-full flex items-center">
+    <UserLayout>
+      <div className="w-full mt-10 ml-10 flex items-center">
         <img
           src={`${(form && form.img) || "https://via.placeholder.com/200"}`}
           alt="User Info"
@@ -187,10 +194,12 @@ const EmployeeDetail = () => {
           </div>
           <div className="mt-4">
             <button
-              className="outline-none px-4 py-1 w-32 bg-red-500 text-white rounded-lg"
-              onClick={accountDeleter}
+              className="outline-none px-4 py-1 w-46 bg-red-500 text-white rounded-lg"
+              onClick={() => {
+                setOpenPasswordModel(true);
+              }}
             >
-              Delete
+              Change Password
             </button>{" "}
             <button
               className="outline-none px-4 py-1 w-32 bg-gray-200 rounded-lg"
@@ -293,8 +302,74 @@ const EmployeeDetail = () => {
           </div>
         </div>
       </div>
-    </Layout>
+
+      <div
+        className={`${
+          openPasswordModel ? "block" : "hidden"
+        } absolute top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-25 backdrop-blur-sm`}
+      >
+        <div className="border px-4 py-4 rounded-md bg-white drop-shadow-lg">
+          <h1 className="text-black text-lg font-bold mb-6 text-center">
+            Change Password
+          </h1>
+          <div className="flex items-center gap-4">
+            <input
+              type="password"
+              placeholder="current Password"
+              className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
+              value={credential.password}
+              onChange={(e) =>
+                setCredential({ ...credential, password: e.target.value })
+              }
+            />
+          </div>
+
+          <div className="flex items-center gap-4">
+            <input
+              type="password"
+              placeholder="New Password"
+              className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
+              value={credential.newPassword}
+              onChange={(e) =>
+                setCredential({ ...credential, newPassword: e.target.value })
+              }
+            />
+          </div>
+          <div className="flex items-center gap-4">
+            <input
+              type="password"
+              placeholder="Confirm New Password"
+              className="block outline-none border border-gray-400 rounded-md w-64 h-10 px-2 py-1 mb-2"
+              value={credential.confirmNewPassword}
+              onChange={(e) =>
+                setCredential({
+                  ...credential,
+                  confirmNewPassword: e.target.value,
+                })
+              }
+            />
+          </div>
+
+          <div className="flex justify-end items-center mt-6 mb-2">
+            <button
+              className="outline-none text-sm text-red-700 rounded-md w-32 px-4 py-2"
+              onClick={() => {
+                setOpenPasswordModel(false);
+              }}
+            >
+              <p className="text-sm font-semibold">Cancel</p>
+            </button>
+            <button
+              className="outline-none text-sm bg-primary text-white rounded-md w-32 px-4 py-2"
+              onClick={accountPasswordReset}
+            >
+              <p className="text-sm font-semibold">Save</p>
+            </button>
+          </div>
+        </div>
+      </div>
+    </UserLayout>
   );
 };
 
-export default EmployeeDetail;
+export default EmpProfile;
