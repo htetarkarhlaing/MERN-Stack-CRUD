@@ -168,7 +168,7 @@ const accountPasswordUpdate = async (req, res) => {
         },
       }
     );
-    if(accountUpdater !== null) {
+    if (accountUpdater !== null) {
       return res.status(201).json({
         meta: {
           success: true,
@@ -176,8 +176,7 @@ const accountPasswordUpdate = async (req, res) => {
         data: accountUpdater,
         self: req.originalUrl,
       });
-    }
-    else {
+    } else {
       return res.status(404).json({
         meta: {
           success: false,
@@ -185,8 +184,6 @@ const accountPasswordUpdate = async (req, res) => {
         self: req.originalUrl,
       });
     }
-
-   
   } catch (err) {
     console.log(err);
     return res.status(500).json({
@@ -269,8 +266,9 @@ const profileDataFetcher = async (req, res) => {
     const attList = await Attendance.find({
       createdAt: { $gte: startOfToday },
     });
+    const staffRole = await Role.find({ role: "staff" });
     const employeeList = await Account.find({
-      role: "623706512618ba2b199a9169",
+      role: staffRole.role,
     });
     return res.status(200).json({
       meta: {
