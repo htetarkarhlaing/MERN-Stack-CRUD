@@ -36,7 +36,6 @@ const columns = [
 const Task = () => {
   //instances
   const URL = process.env.REACT_APP_URL;
-  const STAFF_ID = process.env.REACT_APP_STAFF_ID;
   const [openModel, setOpenModel] = useState(false);
   const [empList, setEmpList] = useState();
   const [taskList, setTaskList] = useState([]);
@@ -68,7 +67,7 @@ const Task = () => {
   };
 
   const empFetcher = async () => {
-    await fetch(`${URL}/api/accounts/${STAFF_ID}`, {
+    await fetch(`${URL}/api/accounts/staff`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     })

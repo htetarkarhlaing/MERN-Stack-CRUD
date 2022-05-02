@@ -9,9 +9,6 @@ import CloudinaryUploadWidget from "../components/CloudinaryWidget";
 const Admin = () => {
   //instances
   const URL = process.env.REACT_APP_URL;
-  const STAFF_ID = process.env.REACT_APP_STAFF_ID;
-  const ADMIN_ID = process.env.REACT_APP_ADMIN_ID;
-
   const [openModel, setOpenModel] = useState(false);
   const [empList, setEmpList] = useState();
   const [role, setRole] = useState([]);
@@ -26,7 +23,7 @@ const Admin = () => {
     department: "",
     dateOfBirth: "",
     education: "",
-    role: ADMIN_ID,
+    role: "6237064c2618ba2b199a9167",
   });
 
   const imageAdder = (url) => {
@@ -55,7 +52,7 @@ const Admin = () => {
   };
 
   const empFetcher = async () => {
-    await fetch(`${URL}/api/accounts/${ADMIN_ID}`, {
+    await fetch(`${URL}/api/accounts/6237064c2618ba2b199a9167`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     })
@@ -101,7 +98,7 @@ const Admin = () => {
               password: "",
               confirmPassword: "",
               hourlyPaidRate: "",
-              role: STAFF_ID,
+              role: "623706512618ba2b199a9169",
             });
             setOpenModel(false);
             window.alert("Success");
@@ -113,7 +110,7 @@ const Admin = () => {
               password: "",
               confirmPassword: "",
               hourlyPaidRate: "",
-              role: STAFF_ID,
+              role: "623706512618ba2b199a9169",
             });
             setOpenModel(false);
             window.alert("Something went wrong!");
@@ -126,7 +123,7 @@ const Admin = () => {
             password: "",
             confirmPassword: "",
             hourlyPaidRate: "",
-            role: STAFF_ID,
+            role: "623706512618ba2b199a9169",
           });
           setOpenModel(false);
           window.alert("Something went wrong!");
@@ -307,7 +304,7 @@ const Admin = () => {
                   password: "",
                   confirmPassword: "",
                   hourlyPaidRate: "",
-                  role: STAFF_ID,
+                  role: "623706512618ba2b199a9169",
                 });
                 setOpenModel(false);
               }}
