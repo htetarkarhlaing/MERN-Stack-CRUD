@@ -37,6 +37,7 @@ const columns = [
 const Payroll = () => {
   //instances
   const URL = process.env.REACT_APP_URL;
+  const STAFF_ID = process.env.REACT_APP_STAFF_ID;
   const [openModel, setOpenModel] = useState(false);
   const [empList, setEmpList] = useState();
   const [payrollList, setPayrollList] = useState([]);
@@ -90,7 +91,7 @@ const Payroll = () => {
 
   const empFetcher = async () => {
     setEmpList([]);
-    await fetch(`${URL}/api/accounts/staff`, {
+    await fetch(`${URL}/api/accounts/${STAFF_ID}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     })

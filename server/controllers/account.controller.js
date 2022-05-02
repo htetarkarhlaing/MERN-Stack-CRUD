@@ -266,9 +266,9 @@ const profileDataFetcher = async (req, res) => {
     const attList = await Attendance.find({
       createdAt: { $gte: startOfToday },
     });
-    const staffRole = await Role.find({ role: "staff" });
+    // const staffRole = await Role.find({ _id: process.env.STAFF_ID });
     const employeeList = await Account.find({
-      role: staffRole.role,
+      role: process.env.STAFF_ID,
     });
     return res.status(200).json({
       meta: {

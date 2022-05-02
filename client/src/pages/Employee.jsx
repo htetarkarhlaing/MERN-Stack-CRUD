@@ -9,6 +9,8 @@ import CloudinaryUploadWidget from "../components/CloudinaryWidget";
 const Employee = () => {
   //instances
   const URL = process.env.REACT_APP_URL;
+  const STAFF_ID = process.env.REACT_APP_STAFF_ID;
+
   const [openModel, setOpenModel] = useState(false);
   const [empList, setEmpList] = useState();
   const [role, setRole] = useState([]);
@@ -23,7 +25,7 @@ const Employee = () => {
     department: "",
     dateOfBirth: "",
     education: "",
-    role: "623706512618ba2b199a9169",
+    role: STAFF_ID,
   });
 
   const imageAdder = (url) => {
@@ -52,7 +54,7 @@ const Employee = () => {
   };
 
   const empFetcher = async () => {
-    await fetch(`${URL}/api/accounts/623706512618ba2b199a9169`, {
+    await fetch(`${URL}/api/accounts/${STAFF_ID}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     })
@@ -98,7 +100,7 @@ const Employee = () => {
               password: "",
               confirmPassword: "",
               hourlyPaidRate: "",
-              role: "623706512618ba2b199a9169",
+              role: STAFF_ID,
             });
             setOpenModel(false);
             window.alert("Success");
@@ -110,7 +112,7 @@ const Employee = () => {
               password: "",
               confirmPassword: "",
               hourlyPaidRate: "",
-              role: "623706512618ba2b199a9169",
+              role: STAFF_ID,
             });
             setOpenModel(false);
             window.alert("Something went wrong!");
@@ -123,7 +125,7 @@ const Employee = () => {
             password: "",
             confirmPassword: "",
             hourlyPaidRate: "",
-            role: "623706512618ba2b199a9169",
+            role: STAFF_ID,
           });
           setOpenModel(false);
           window.alert("Something went wrong!");
@@ -324,7 +326,7 @@ const Employee = () => {
                   password: "",
                   confirmPassword: "",
                   hourlyPaidRate: "",
-                  role: "623706512618ba2b199a9169",
+                  role: STAFF_ID,
                 });
                 setOpenModel(false);
               }}

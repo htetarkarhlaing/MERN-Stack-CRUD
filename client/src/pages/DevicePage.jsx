@@ -8,7 +8,6 @@ const DevicePage = () => {
   //instances
   const URL = process.env.REACT_APP_URL;
   const [openModel, setOpenModel] = useState(false);
-  const [count, setCount] = useState(0);
   const [deviceList, setDeviceList] = useState();
   const [form, setForm] = useState({
     deviceId: "",
@@ -98,11 +97,11 @@ const DevicePage = () => {
     deviceListFetcher();
   }, []);
 
-  useEffect(() => {
-    console.log("useeffect count", count);
-  }, []);
+  // useEffect(() => {
+  //   console.log("useeffect count", count);
+  // }, []);
 
-  console.log("count", count);
+  // console.log("count", count);
 
   return (
     <Layout>
@@ -117,7 +116,7 @@ const DevicePage = () => {
 
         <button
           className="outline-none px-4 py-2 bg-gray-200 rounded-lg"
-          onClick={() => setCount(count + 1)}
+          onClick={() => setOpenModel(true)}
         >
           Create New Device
         </button>
